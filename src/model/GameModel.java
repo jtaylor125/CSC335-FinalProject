@@ -15,7 +15,6 @@ public class GameModel {
 	private Pegboard pegboard;
 	
 	public GameModel() {
-		// TO DO - complete Player class
 		playerOne = new Player();
 		playerTwo = new Player();
 		
