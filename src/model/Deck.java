@@ -60,4 +60,9 @@ public class Deck {
 		
 	}
 	
+	//
+	public Card drawTop() {
+		return deck.pop();
+	}
+	
 }
