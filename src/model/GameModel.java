@@ -78,15 +78,15 @@ public class GameModel {
 		// deal the first hand to player 1 if player 2 is dealer
 		if (playerTwo.isDealer()) {
 			for (int i=0; i < 6; i++) {
-				playerOne.addToHand(deck.pop());
-				playerTwo.addToHand(deck.pop());
+				playerOne.addToHand(deck.drawTop());
+				playerTwo.addToHand(deck.drawTop());
 			}
 		}
 		// deal the first hand to player 2 if player 1 is dealer
 		else {
 			for (int i=0; i < 6; i++) {
-				playerTwo.addToHand(deck.pop());
-				playerOne.addToHand(deck.pop());
+				playerTwo.addToHand(deck.drawTop());
+				playerOne.addToHand(deck.drawTop());
 			}
 		}
 		// discards should probably be handled somewhere else as players need to see their cards
@@ -98,7 +98,7 @@ public class GameModel {
 	// is the count.
 	public void peggingPlay() {
 		// get starter card
-		starter = deck.cutAndDeal();
+		starter = deck.drawRandom();
 		boolean goCalled = false;
 		boolean lastPlayed31 = false;
 
