@@ -64,5 +64,11 @@ public class Deck {
 	public Card drawTop() {
 		return deck.pop();
 	}
+
+	// cut deck in half and deal top of bottom half
+	public Card cutAndDeal() {
+		int middleIndex = deck.size() / 2;
+		return deck.remove(middleIndex);
+	}
 	
 }
