@@ -60,9 +60,9 @@ public class GameModel {
 			playerOne.setDealer(true);
 		}
 
-		// remove cards from players hands
-		playerOne.discard(card1);
-		playerTwo.discard(card2);
+		// remove cards from players hands add to cardStack
+		//playerOne.discard(card1);
+		//playerTwo.discard(card2);
 
 		// drawn cards return to the deck
 
@@ -102,6 +102,8 @@ public class GameModel {
 		boolean goCalled = false;
 		boolean lastPlayed31 = false;
 
+		// pass starter card to method in Hand class
+
 		// set current player and second player
 		Player currentPlayer;
 		Player secondPlayer;
@@ -123,6 +125,8 @@ public class GameModel {
 			}
 		}
 	}
+
+	// TO DO - create method for adding card to center pile
 	
 	// TO DO - complete regularPlay functionality
 	// Each player scores their hand with the starter card, and the dealer scores
