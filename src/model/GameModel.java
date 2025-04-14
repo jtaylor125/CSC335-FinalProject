@@ -34,10 +34,35 @@ public class GameModel {
 		pegboard = new Pegboard();
 	}
 	
-	// TO DO - complete determineDealer functionality
 	// Draw two random cards from the deck, one for each player. The player with the 
 	// lower card becomes the first dealer. Dealer gets the crib.
 	public void determineDealer() {
+		// draw random cards from deck and add to players hands
+		Card card1 = deck.drawRandom();
+		Card card2 = deck.drawRandom();
+
+		while (card1.rank.ordinal() == card2.rank.ordinal()) {
+			deck.shuffle();
+			card1 = deck.drawRandom();
+			card2 = deck.drawRandom();
+		}
+
+		playerOne.addToHand(card1);
+		playerTwo.addToHand(card2);
+
+		// compare rank of each players hands
+		if (card1.rank.ordinal() < card2.rank.ordinal()) {
+			playerTwo.setDealer(true);
+		}
+		else {
+			playerOne.setDealer(true);
+		}
+
+		// remove cards from players hands
+		playerOne.discard(card1);
+		playerTwo.discard(card2);
+
+		// drawn cards return to the deck
 
 	}
 	
