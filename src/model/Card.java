@@ -2,7 +2,6 @@ package model;
 
 import java.util.HashMap;
 
-
 public class Card {
 	
 	public final Suit suit;
@@ -10,16 +9,17 @@ public class Card {
 	private static HashMap<String, Card> CARDS;
 	
 	
-	private Card(Suit s, Rank r){
-		this.suit = s;
+	private Card(Rank r, Suit s){
 		this.rank = r;
+		this.suit = s;
+
 	}
 
 	static {
 		for(Suit s : Suit.values()) {
 			for(Rank r : Rank.values()) {
 				String temp = r + " OF " + s;
-				CARDS.put(temp, new Card(s,r));
+				CARDS.put(temp, new Card(r,s));
 			}
 		}
 	}
