@@ -30,7 +30,7 @@ public class GameModel {
 		// playingRun will be assigned in pegging play
 		playingRun = null;
 		
-		// TO DO - complete pegboard cloass
+		// TO DO - complete pegboard class
 		pegboard = new Pegboard();
 	}
 	
@@ -38,7 +38,8 @@ public class GameModel {
 	// Draw two random cards from the deck, one for each player. The player with the 
 	// lower card becomes the first dealer. Dealer gets the crib.
 	public void determineDealer() {
-		
+		playerOne.addToHand(deck.drawRandom());
+		playerTwo.addToHand(deck.drawRandom());
 	}
 	
 	// TO DO - complete deal functionality

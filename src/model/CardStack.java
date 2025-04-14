@@ -1,5 +1,9 @@
 package model;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 public class CardStack implements Iterable<Card> {
 
 	private final List<Card> cards = new ArrayList<Card>();

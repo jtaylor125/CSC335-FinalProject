@@ -2,6 +2,7 @@ package model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Deck extends CardStack{
 	private final List<Card> deck = new ArrayList<Card>();
