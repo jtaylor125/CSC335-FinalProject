@@ -13,6 +13,8 @@ public class GameModel {
 	private CardStack playingRun;
 	
 	private Pegboard pegboard;
+
+	private int runningTotal;
 	
 	public GameModel() {
 		playerOne = new Player();
@@ -64,6 +66,9 @@ public class GameModel {
 
 		// drawn cards return to the deck
 
+
+		// reshuffle deck
+		deck.shuffle();
 	}
 	
 	// TO DO - complete deal functionality
@@ -88,12 +93,35 @@ public class GameModel {
 		// before choosing which one to discard
 	}
 	
-	// TO DO - complete peggingPlay functionality
 	// Flip the starter card, the top card on the deck. Players play cards on the 
 	// playingRun and can score points for various things. One important aspect of this
 	// is the count.
 	public void peggingPlay() {
+		// get starter card
+		starter = deck.cutAndDeal();
+		boolean goCalled = false;
+		boolean lastPlayed31 = false;
+
+		// set current player and second player
+		Player currentPlayer;
+		Player secondPlayer;
+
+		if (playerOne.isDealer()) {
+			currentPlayer = playerTwo;
+			secondPlayer = playerOne;
+		}
+		else {
+			currentPlayer = playerOne;
+			secondPlayer = playerTwo;
+		}
 		
+		while (!playerOne.isHandEmpty() && !playerTwo.isHandEmpty()) {
+			boolean cardPlayed = false;
+
+			for (int i = 0; i < 2; i++) {
+
+			}
+		}
 	}
 	
 	// TO DO - complete regularPlay functionality

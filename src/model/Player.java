@@ -50,5 +50,7 @@ public class Player {
 		this.score = this.score + addValue;
 	}
 	
-
+	public boolean isHandEmpty() {
+		return playerHand.isEmpty();
+	}
 }

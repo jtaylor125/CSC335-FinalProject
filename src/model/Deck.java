@@ -21,5 +21,11 @@ public class Deck extends CardStack{
 	public void drawRandom() {
 		
 	}
+
+	// cut deck in half and deal top of bottom half
+	public Card cutAndDeal() {
+		int middleIndex = deck.size() / 2;
+		return deck.remove(middleIndex);
+	}
 	
 }
