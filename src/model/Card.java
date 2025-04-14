@@ -1,10 +1,12 @@
 package model;
 
+import java.util.HashMap;
+
 
 public class Card {
 	
-	public final suit;
-	public final rank;
+	public final Suit suit;
+	public final Rank rank;
 	private static HashMap<String, Card> CARDS;
 	
 	

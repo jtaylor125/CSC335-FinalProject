@@ -38,14 +38,29 @@ public class GameModel {
 	// Draw two random cards from the deck, one for each player. The player with the 
 	// lower card becomes the first dealer. Dealer gets the crib.
 	public void determineDealer() {
-		
+
 	}
 	
 	// TO DO - complete deal functionality
 	// Each player is dealt 6 cards to their hand. They discard two, which makes up the
 	// crib.
 	public void deal() {
-		
+		// deal the first hand to player 1 if player 2 is dealer
+		if (playerTwo.isDealer()) {
+			for (int i=0; i < 6; i++) {
+				playerOne.addToHand(deck.pop());
+				playerTwo.addToHand(deck.pop());
+			}
+		}
+		// deal the first hand to player 2 if player 1 is dealer
+		else {
+			for (int i=0; i < 6; i++) {
+				playerTwo.addToHand(deck.pop());
+				playerOne.addToHand(deck.pop());
+			}
+		}
+		// discards should probably be handled somewhere else as players need to see their cards
+		// before choosing which one to discard
 	}
 	
 	// TO DO - complete peggingPlay functionality
@@ -66,7 +81,19 @@ public class GameModel {
 	// TO DO - complete reset functionality
 	// reset the deck, shuffle, and switch dealers
 	public void reset() {
-		
+
+		switchDealers();
 	}
 	
+	private void switchDealers() {
+		// switch dealers
+		if (playerOne.isDealer()) {
+			playerOne.setDealer(false);
+			playerTwo.setDealer(true);
+		}
+		else {
+			playerOne.setDealer(true);
+			playerTwo.setDealer(false);
+		}
+	}
 }
