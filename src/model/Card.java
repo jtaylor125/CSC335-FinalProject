@@ -6,7 +6,7 @@ public class Card {
 	
 	public final Suit suit;
 	public final Rank rank;
-	private static HashMap<String, Card> CARDS;
+	private static HashMap<String, Card> CARDS = new HashMap<>();
 	
 	
 	private Card(Rank r, Suit s){
