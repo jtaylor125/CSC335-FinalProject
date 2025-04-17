@@ -117,6 +117,7 @@ public class GameModel {
 			secondPlayer = playerTwo;
 		}
 		
+		// add checker to see if cards of both players cannot add to less that or equal to 31
 		while (!playerOne.isHandEmpty() && !playerTwo.isHandEmpty()) {
 			boolean cardPlayed = false;
 
