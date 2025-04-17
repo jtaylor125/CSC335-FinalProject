@@ -1,32 +1,45 @@
 package model;
 
+import java.util.HashMap;
+
 public class Pegboard {
-    private Player playerOne;
-    private Player playerTwo;
-    private int peg1;
-    private int peg2;
-    public static final int PEG_TOTAL = 121;
+	private static final int WINNING_SCORE = 121;
 
-    // class constructor
-    public Pegboard(Player p1, Player p2) {
-        playerOne = p1;
-        playerTwo = p2;
-        peg1 = 0;
-        peg2 = 0;
-    }
+	private HashMap<Player, Integer> score;
 
-    // increments a peg variable (add exception thrown if player doesn't equal the instance variables)
-    public void movePeg(Player player, int points) {
-        if (playerOne.equals(player)) {
-            peg1 += points;
-        }
-        else {
-            peg2 += points;
-        }
-    }
+	public Pegboard() {
+		score = new HashMap<>();
+	}
 
-    // checks if a peg has reached the 121th peg hole
-    public boolean reachedPegboardEnd() {
-        return peg1 == PEG_TOTAL || peg2 == PEG_TOTAL;
-    }
+	// this method initalizes player scores if needed
+	public void addPlayer(Player player) {
+		if (!score.containsKey(player)) {
+			score.put(player, 0);
+		}
+	}
+
+	// add points to a player's score
+	public void addPoints(Player player, int points) {
+		addPlayer(player);  // ensure player is tracked
+
+		int currentScore = score.get(player);
+		int newScore = currentScore + points;
+		score.put(player, newScore);
+	}
+
+	// get the score of a player
+	public int getScore(Player player) {
+		addPlayer(player);  // ensure player is tracked
+		return score.get(player);
+	}
+
+	// check if a player has won
+	public boolean hasWon(Player player) {
+		return getScore(player) >= WINNING_SCORE;
+	}
+	
+	// returns a copy of the hashmap that keeps track of scores
+	public HashMap<Player, Integer> getAllScores() {
+		return new HashMap<Player, Integer>(score);
+	}
 }

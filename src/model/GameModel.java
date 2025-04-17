@@ -78,15 +78,15 @@ public class GameModel {
 		// deal the first hand to player 1 if player 2 is dealer
 		if (playerTwo.isDealer()) {
 			for (int i=0; i < 6; i++) {
-				playerOne.addToHand(deck.pop());
-				playerTwo.addToHand(deck.pop());
+				playerOne.addToHand(deck.drawTop());
+				playerTwo.addToHand(deck.drawTop());
 			}
 		}
 		// deal the first hand to player 2 if player 1 is dealer
 		else {
 			for (int i=0; i < 6; i++) {
-				playerTwo.addToHand(deck.pop());
-				playerOne.addToHand(deck.pop());
+				playerTwo.addToHand(deck.drawTop());
+				playerOne.addToHand(deck.drawTop());
 			}
 		}
 		// discards should probably be handled somewhere else as players need to see their cards
@@ -98,7 +98,7 @@ public class GameModel {
 	// is the count.
 	public void peggingPlay() {
 		// get starter card
-		starter = deck.cutAndDeal();
+		starter = deck.drawRandom();
 		boolean goCalled = false;
 		boolean lastPlayed31 = false;
 
@@ -127,19 +127,33 @@ public class GameModel {
 		}
 	}
 
-	// TO DO - create method for adding card to center pile
-	
 	// TO DO - complete regularPlay functionality
 	// Each player scores their hand with the starter card, and the dealer scores
 	// their crib as well. 
 	public void regularPlay() {
-		
+		int plrOnePts = playerOne.scoreHand(starter);
+		int plrTwoPts = playerTwo.scoreHand(starter);
+
+		// add the scores to the pegboard
+		pegboard.addPoints(playerOne, plrOnePts);
+		pegboard.addPoints(playerTwo, plrOnePts);
+
+		// the dealer scores the crib
+		if (playerOne.isDealer()) {
+			int cribPts = crib.score(starter);
+			pegboard.addPoints(playerOne, cribPts);
+		}
+		else {
+			int cribPts = crib.score(starter);
+			pegboard.addPoints(playerTwo, cribPts);
+		}
 	}
 	
 	// TO DO - complete reset functionality
 	// reset the deck, shuffle, and switch dealers
 	public void reset() {
-
+		
+		deck.shuffle();
 		switchDealers();
 	}
 	

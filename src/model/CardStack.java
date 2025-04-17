@@ -1,5 +1,9 @@
 package model;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 public class CardStack implements Iterable<Card> {
 
 	private final List<Card> cards = new ArrayList<Card>();
@@ -25,6 +29,10 @@ public class CardStack implements Iterable<Card> {
 	
 	public boolean isEmpty() {
 		return cards.size() == 0;
+	}
+	
+	public int size() {
+		return cards.size();
 	}
 	
 	public Iterator<Card> iterator() {
