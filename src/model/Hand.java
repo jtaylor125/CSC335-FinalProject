@@ -15,10 +15,6 @@ public class Hand {
 
 	}
 	
-	public int calculateHandScore() {
-		return 0;
-	}
-	
 	public void addCard(Card card) {
 		this.hand.add(card);
 	}
