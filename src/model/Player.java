@@ -53,4 +53,8 @@ public class Player {
 	public boolean isHandEmpty() {
 		return playerHand.isEmpty();
 	}
+	
+	public int scoreHand(Card starter) {
+		return playerHand.score(starter);
+	}
 }

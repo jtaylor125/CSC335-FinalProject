@@ -123,18 +123,34 @@ public class GameModel {
 			}
 		}
 	}
-	
+
 	// TO DO - complete regularPlay functionality
 	// Each player scores their hand with the starter card, and the dealer scores
 	// their crib as well. 
 	public void regularPlay() {
-		
+		int plrOnePts = playerOne.scoreHand(starter);
+		int plrTwoPts = playerTwo.scoreHand(starter);
+
+		// add the scores to the pegboard
+		pegboard.addPoints(playerOne, plrOnePts);
+		pegboard.addPoints(playerTwo, plrOnePts);
+
+		// the dealer scores the crib
+		if (playerOne.isDealer()) {
+			int cribPts = crib.score(starter);
+			pegboard.addPoints(playerOne, cribPts);
+		}
+		else {
+			int cribPts = crib.score(starter);
+			pegboard.addPoints(playerTwo, cribPts);
+		}
 	}
 	
 	// TO DO - complete reset functionality
 	// reset the deck, shuffle, and switch dealers
 	public void reset() {
-
+		
+		deck.shuffle();
 		switchDealers();
 	}
 	

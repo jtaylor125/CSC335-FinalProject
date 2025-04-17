@@ -29,4 +29,11 @@ public class Card {
 		String temp = r + " OF " + s;
 		return CARDS.get(temp);
 	}
+	
+	public int getValue() {
+		if (rank.ordinal() >= Rank.JACK.ordinal()) {
+			return 10;
+		}
+		return rank.ordinal() + 1;
+	}
 } // end class
