@@ -60,9 +60,9 @@ public class GameModel {
 			playerOne.setDealer(true);
 		}
 
-		// remove cards from players hands
-		playerOne.discard(card1);
-		playerTwo.discard(card2);
+		// remove cards from players hands add to cardStack
+		//playerOne.discard(card1);
+		//playerTwo.discard(card2);
 
 		// drawn cards return to the deck
 
@@ -102,6 +102,8 @@ public class GameModel {
 		boolean goCalled = false;
 		boolean lastPlayed31 = false;
 
+		// pass starter card to method in Hand class
+
 		// set current player and second player
 		Player currentPlayer;
 		Player secondPlayer;
@@ -115,6 +117,7 @@ public class GameModel {
 			secondPlayer = playerTwo;
 		}
 		
+		// add checker to see if cards of both players cannot add to less that or equal to 31
 		while (!playerOne.isHandEmpty() && !playerTwo.isHandEmpty()) {
 			boolean cardPlayed = false;
 
