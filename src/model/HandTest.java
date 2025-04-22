@@ -2,7 +2,6 @@ package model;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -250,5 +249,62 @@ public class HandTest {
 		h.addCard(c4);
 		
 		assertEquals(9,h.score(c5));
+	}
+	
+	@Test
+	void testScoreFlush() {
+		Hand h = new Hand();
+		
+		Card c5 = Card.get(Rank.SIX, Suit.CLUBS);
+		
+		Card c1 = Card.get(Rank.EIGHT, Suit.CLUBS);
+		Card c2 = Card.get(Rank.NINE, Suit.CLUBS);
+		Card c3 = Card.get(Rank.TEN, Suit.CLUBS);
+		Card c4 = Card.get(Rank.SIX, Suit.CLUBS);
+		
+		h.addCard(c1);
+		h.addCard(c2);
+		h.addCard(c3);
+		h.addCard(c4);
+		
+		assertEquals(14,h.score(c5));
+	}
+	
+	@Test
+	void testScoreFlushNoStarter() {
+		Hand h = new Hand();
+		
+		Card c5 = Card.get(Rank.SIX, Suit.DIAMONDS);
+		
+		Card c1 = Card.get(Rank.EIGHT, Suit.CLUBS);
+		Card c2 = Card.get(Rank.NINE, Suit.CLUBS);
+		Card c3 = Card.get(Rank.TEN, Suit.CLUBS);
+		Card c4 = Card.get(Rank.SIX, Suit.CLUBS);
+		
+		h.addCard(c1);
+		h.addCard(c2);
+		h.addCard(c3);
+		h.addCard(c4);
+		
+		assertEquals(13,h.score(c5));
+	}
+	
+	@Test
+	void testScoreNobs() {
+		Hand h = new Hand();
+		
+		Card c5 = Card.get(Rank.SIX, Suit.CLUBS);
+		
+		Card c1 = Card.get(Rank.EIGHT, Suit.CLUBS);
+		Card c2 = Card.get(Rank.JACK, Suit.CLUBS);
+		Card c3 = Card.get(Rank.TEN, Suit.CLUBS);
+		Card c4 = Card.get(Rank.SIX, Suit.CLUBS);
+		
+		h.addCard(c1);
+		h.addCard(c2);
+		h.addCard(c3);
+		h.addCard(c4);
+		
+		assertEquals(8,h.score(c5));
 	}
 }

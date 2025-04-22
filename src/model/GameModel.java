@@ -20,19 +20,14 @@ public class GameModel {
 		playerOne = new Player();
 		playerTwo = new Player();
 		
-		// TO DO - complete Deck class
 		deck = new Deck();
 		
-		// TO DO - complete Hand class
 		crib = new Hand();
 		
-		// starter will be assigned in pegging play
 		starter = null;
 		
-		// playingRun will be assigned in pegging play
 		playingRun = null;
 		
-		// TO DO - complete pegboard cloass
 		pegboard = new Pegboard();
 	}
 	
