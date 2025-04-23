@@ -66,20 +66,19 @@ public class GameModel {
 		deck.shuffle();
 	}
 	
-	// TO DO - complete deal functionality
 	// Each player is dealt 6 cards to their hand. They discard two, which makes up the
 	// crib.
 	public void deal() {
 		// deal the first hand to player 1 if player 2 is dealer
 		if (playerTwo.isDealer()) {
-			for (int i=0; i < 6; i++) {
+			for (int i=0; i < 5; i++) {
 				playerOne.addToHand(deck.drawTop());
 				playerTwo.addToHand(deck.drawTop());
 			}
 		}
 		// deal the first hand to player 2 if player 1 is dealer
 		else {
-			for (int i=0; i < 6; i++) {
+			for (int i=0; i < 5; i++) {
 				playerTwo.addToHand(deck.drawTop());
 				playerOne.addToHand(deck.drawTop());
 			}
@@ -88,38 +87,89 @@ public class GameModel {
 		// before choosing which one to discard
 	}
 	
+	public void discard(String player, String discard) {
+		String rank = discard.substring(0, discard.indexOf(" "));
+		String suit = discard.substring(discard.indexOf(" ")+1);
+		Card discardCard = Card.get(rank,suit);
+		
+		if (player.equals("Player 1")) {
+			crib.addCard(discardCard);
+			playerOne.getHand().removeCard(discardCard);
+		} else {
+			crib.addCard(discardCard);
+			playerTwo.getHand().removeCard(discardCard);;
+		}
+	}
+	
 	// Flip the starter card, the top card on the deck. Players play cards on the 
 	// playingRun and can score points for various things. One important aspect of this
 	// is the count.
 	public void peggingPlay() {
-		// get starter card
-		starter = deck.drawRandom();
-		boolean goCalled = false;
-		boolean lastPlayed31 = false;
-
-		// pass starter card to method in Hand class
-
-		// set current player and second player
-		Player currentPlayer;
-		Player secondPlayer;
-
-		if (playerOne.isDealer()) {
-			currentPlayer = playerTwo;
-			secondPlayer = playerOne;
-		}
-		else {
-			currentPlayer = playerOne;
-			secondPlayer = playerTwo;
-		}
+		starter = deck.drawTop();
+		playingRun = new CardStack();
+		runningTotal = 0;
 		
-		// add checker to see if cards of both players cannot add to less that or equal to 31
-		while (!playerOne.isHandEmpty() && !playerTwo.isHandEmpty()) {
-			boolean cardPlayed = false;
+		Player currentPlayer = playerOne.isDealer() ? playerTwo : playerOne;
+	    Player otherPlayer = playerOne.isDealer() ? playerOne : playerTwo;
+		
+		
+		// store hand and crib scores before cards are used
+		int playerOneHandScore = playerOne.getHand().score(starter);
+		int playerTwoHandScore = playerTwo.getHand().score(starter);
+		int cribScore = crib.score(starter);
+		
+		boolean roundOver = false;
+	    boolean goCalled = false;
 
-			for (int i = 0; i < 2; i++) {
+	    while (!playerOne.isHandEmpty() || !playerTwo.isHandEmpty()) {
+	        boolean turnTaken = false;
 
-			}
-		}
+	        Hand currentHand = currentPlayer.getHand();
+	        List<Card> playableCards = currentHand.getPlayableCards(runningTotal); // assumes method exists
+
+	        if (!playableCards.isEmpty()) {
+	            Card play = playableCards.get(0); // basic AI: play first valid
+	            currentHand.removeCard(play);
+	            playingRun.addCard(play);
+	            runningTotal += play.rank.getValue(); // assumes rank has numeric value
+
+	            // Scoring logic (pseudo code):
+	            int points = 0;
+	            if (runningTotal == 15) points += 2;
+	            if (runningTotal == 31) points += 2;
+	            points += playingRun.scoreRun(); // your method to check runs/pairs/etc.
+
+	            pegboard.addPoints(currentPlayer, points);
+	            System.out.println(currentPlayer.getName() + " plays " + play + " for " + points + " points");
+
+	            turnTaken = true;
+
+	            // Check for 31 reset
+	            if (runningTotal == 31 || currentPlayer.getHand().getPlayableCards(runningTotal).isEmpty() &&
+	                otherPlayer.getHand().getPlayableCards(runningTotal).isEmpty()) {
+	                runningTotal = 0;
+	                playingRun.clear(); // reset stack
+	                goCalled = false;
+	            }
+	        } else {
+	            if (goCalled) {
+	                // "Go" was already called last turn, award 1 point to opponent
+	                pegboard.addPoints(otherPlayer, 1);
+	                runningTotal = 0;
+	                playingRun.clear();
+	                goCalled = false;
+	                System.out.println(currentPlayer.getName() + " cannot play. " + otherPlayer.getName() + " scores 1 point.");
+	            } else {
+	                goCalled = true;
+	                System.out.println(currentPlayer.getName() + " says 'Go'");
+	            }
+	        }
+
+	        // Swap players
+	        Player temp = currentPlayer;
+	        currentPlayer = otherPlayer;
+	        otherPlayer = temp;
+	    }
 	}
 
 	// TO DO - complete regularPlay functionality
@@ -131,7 +181,7 @@ public class GameModel {
 
 		// add the scores to the pegboard
 		pegboard.addPoints(playerOne, plrOnePts);
-		pegboard.addPoints(playerTwo, plrOnePts);
+		pegboard.addPoints(playerTwo, plrTwoPts);
 
 		// the dealer scores the crib
 		if (playerOne.isDealer()) {
@@ -162,5 +212,36 @@ public class GameModel {
 			playerOne.setDealer(true);
 			playerTwo.setDealer(false);
 		}
+	}
+	
+	// getters
+	public String getDealer() {
+		if (playerOne.isDealer()) {
+			return "Player 1";
+		} else {
+			return "Player 2";
+		}
+	}
+	
+	public String getHand(String player) {
+		String hand = "";
+		if (player.equals("Player 1")) {
+			for (Card c : playerOne.getHand().gethand()) {
+				hand += c.toString() +", ";
+			}
+		} else {
+			for (Card c : playerTwo.getHand().gethand()) {
+				hand += c.toString() +", ";
+			}
+		}
+		return hand.substring(0,hand.length()-2);
+	}
+	
+	public String getCrib() {
+		String cribString = "";
+		for (Card c : crib.gethand()) {
+			cribString += c.toString() +", ";
+		}
+		return cribString.substring(0,cribString.length()-2);
 	}
 }

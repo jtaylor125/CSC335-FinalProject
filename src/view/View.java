@@ -37,17 +37,56 @@ public class View {
 		}
 		
 		if (onePlayer) {
-			handleOnePlayer();
+			handleOnePlayer(systemIn, game);
 		} else {
-			handleTwoPlayers();
+			handleTwoPlayers(systemIn, game);
 		}
 	}
 	
-	public static void handleOnePlayer() {
+	public static void handleOnePlayer(Scanner systemIn, GameModel game) {
 		return;
 	}
 	
-	public static void handleTwoPlayers() {
+	public static void handleTwoPlayers(Scanner systemIn, GameModel game) {
+		System.out.println("Assign Player 1 and Player 2, type anything to start");
+		String input = systemIn.nextLine().strip();
+		
+		game.determineDealer();
+		
+		String dealer = game.getDealer();
+		
+		System.out.println(dealer + " is dealer");
+		
+		game.deal();
+		
+		System.out.println("Player 1 hand: " + game.getHand("Player 1"));
+		
+		System.out.println("Player 1 choose first card to discard (enter as seen, e.g. 'QUEEN DIAMONDS')");
+		String discardOne = systemIn.nextLine().strip();
+		game.discard("Player 1", discardOne);
+		System.out.println("Player 1 hand: " + game.getHand("Player 1"));
+		
+		System.out.println("Player 1 choose second card to discard (enter as seen, e.g. 'QUEEN DIAMONDS')");
+		String discardTwo = systemIn.nextLine().strip();
+		game.discard("Player 1", discardTwo);
+		System.out.println("Player 1 hand: " + game.getHand("Player 1"));
+		System.out.println("");
+		
+		System.out.println("Player 2 hand: " + game.getHand("Player 2"));
+		
+		System.out.println("Player 2 choose first card to discard (enter as seen, e.g. 'QUEEN DIAMONDS')");
+		discardOne = systemIn.nextLine().strip();
+		game.discard("Player 2", discardOne);
+		System.out.println("Player 2 hand: " + game.getHand("Player 2"));
+		
+		System.out.println("Player 2 choose second card to discard (enter as seen, e.g. 'QUEEN DIAMONDS')");
+		discardTwo = systemIn.nextLine().strip();
+		game.discard("Player 2", discardTwo);
+		System.out.println("Player 2 hand: " + game.getHand("Player 2"));
+		System.out.println("");
+		
+		System.out.println("Crib: " + game.getCrib());
+		
 		return;
 	}
 	
