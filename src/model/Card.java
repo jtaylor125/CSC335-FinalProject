@@ -6,7 +6,7 @@ public class Card {
 	
 	public final Suit suit;
 	public final Rank rank;
-	private static HashMap<String, Card> CARDS;
+	private static HashMap<String, Card> CARDS = new HashMap<>();
 	
 	
 	private Card(Rank r, Suit s){
@@ -28,5 +28,22 @@ public class Card {
 		assert r != null && s != null;
 		String temp = r + " OF " + s;
 		return CARDS.get(temp);
+	}
+	
+	public static Card get(String rank, String suit) {
+		String temp = rank + " OF " + suit;
+		return CARDS.get(temp);
+	}
+	
+	public int getValue() {
+		if (rank.ordinal() >= Rank.JACK.ordinal()) {
+			return 10;
+		}
+		return rank.ordinal() + 1;
+	}
+	
+	@Override
+	public String toString() {
+		return rank.toString() + " " + suit.toString();
 	}
 } // end class

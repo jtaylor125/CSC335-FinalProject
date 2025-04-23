@@ -64,6 +64,11 @@ public class Deck {
 	public Card drawTop() {
 		return deck.pop();
 	}
+	
+	// used for testing
+	int size() {
+		return deck.size();
+	}
 
 	// cut deck in half and deal top of bottom half
 	//public Card cutAndDeal() {

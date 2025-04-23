@@ -8,7 +8,6 @@ public class Player {
 	private boolean isDealer;
 	
 	public Player() {
-		// TO DO - finish Hand class
 		this.playerHand = new Hand();
 		
 		this.score = 0;
@@ -52,5 +51,9 @@ public class Player {
 	
 	public boolean isHandEmpty() {
 		return playerHand.isEmpty();
+	}
+	
+	public int scoreHand(Card starter) {
+		return playerHand.score(starter);
 	}
 }
