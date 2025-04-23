@@ -7,6 +7,8 @@ public class GameModel {
 	private Deck deck;
 	
 	private Hand crib;
+
+	private Card discardedCard;
 	
 	private Card starter;
 	
@@ -34,6 +36,9 @@ public class GameModel {
 		
 		// TO DO - complete pegboard cloass
 		pegboard = new Pegboard();
+
+		// initiate running total
+		runningTotal = 0;
 	}
 	
 	// Draw two random cards from the deck, one for each player. The player with the 
@@ -99,8 +104,9 @@ public class GameModel {
 	public void peggingPlay() {
 		// get starter card
 		starter = deck.drawRandom();
-		boolean goCalled = false;
-		boolean lastPlayed31 = false;
+		
+		// create center pile stack
+		CardStack centerPile = new CardStack();
 
 		// pass starter card to method in Hand class
 
@@ -117,14 +123,37 @@ public class GameModel {
 			secondPlayer = playerTwo;
 		}
 		
-		// add checker to see if cards of both players cannot add to less that or equal to 31
+		// main game play loop
 		while (!playerOne.isHandEmpty() && !playerTwo.isHandEmpty()) {
-			boolean cardPlayed = false;
 
-			for (int i = 0; i < 2; i++) {
-
+			// inner loop resets when both players say go
+			while (!playGo(playerOne) && !playGo(playerTwo)) {
+				if (playerOne.isDealer()) {
+					addToPile(playerTwo, centerPile);
+					addToPile(playerOne, centerPile);
+				}
+				else {
+					addToPile(playerOne, centerPile);
+					addToPile(playerTwo, centerPile);
+				}
 			}
+
+			// reset running total after both players play go
+			runningTotal = 0;
 		}
+	}
+
+	// controller gets user chosen card to discard to center pile
+	private void addToPile(Player player, CardStack pile) {
+		pile.push(discardedCard);
+		player.discard(discardedCard);
+
+		// add to player score
+	}
+
+	// change card to discard based on controller
+	public void updateDiscardedCard(Card card) {
+		discardedCard = card;
 	}
 
 	// TO DO - complete regularPlay functionality
@@ -148,6 +177,27 @@ public class GameModel {
 			pegboard.addPoints(playerTwo, cribPts);
 		}
 	}
+
+	// check if player's hand exceeds 31 points
+	public boolean playGo(Player player) {
+		boolean playGo = true;
+
+		// loop through player's hand to check if a card can be played
+		for (Card card : player.getHand().getHand()) {
+
+			if (getCardOrdinal(card)+runningTotal <= 31) {
+				playGo = false;
+				break;
+			}
+		}
+		return playGo;
+	}
+
+	public int getCardOrdinal(Card card) {
+		if (card.rank == Rank.JACK || card.rank == Rank.QUEEN || card.rank == Rank.KING) return 10;
+		return card.rank.ordinal();
+	}
+
 	
 	// TO DO - complete reset functionality
 	// reset the deck, shuffle, and switch dealers

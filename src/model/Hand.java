@@ -30,7 +30,7 @@ public class Hand {
 	public boolean isEmpty() {
 		return hand.isEmpty();
 	}
-	public List<Card> gethand() {
+	public List<Card> getHand() {
 		// return a copy of the hand, avoidance of problematic escaping references
 		return new ArrayList<>(hand);
 	}
