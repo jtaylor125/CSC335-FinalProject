@@ -16,10 +16,6 @@ public class GameModel {
 	
 	private Deck deck;
 	private Hand crib;
-
-
-	private Card discardedCard;
-	
 	private Card starter;
 	private CardStack playingRun;
 	private Pegboard pegboard;
@@ -39,9 +35,6 @@ public class GameModel {
 		playingRun = null;
 		
 		pegboard = new Pegboard();
-
-		// initiate running total
-		runningTotal = 0;
 	}
 	
 	// Draw two random cards from the deck, one for each player. The player with the 
@@ -114,15 +107,22 @@ public class GameModel {
 	// Flip the starter card, the top card on the deck. Players play cards on the 
 	// playingRun and can score points for various things. One important aspect of this
 	// is the count.
-
-
-	public void peggingPlay() {
-		// get starter card
-		starter = deck.drawRandom();
-		
-		// create center pile stack
-		CardStack centerPile = new CardStack();
-
+	public void peggingPlay(Scanner input) {
+	    starter = deck.drawTop();
+	    playingRun = new CardStack();
+	    runningTotal = 0;
+	    
+	    Player currentPlayer;
+	    Player otherPlayer;
+	    
+	    if (playerOne.isDealer()) {
+	        currentPlayer = playerTwo;
+	        otherPlayer = playerOne;
+	    }
+	    else {
+	        currentPlayer = playerOne;
+	        otherPlayer = playerTwo;
+	    }
 
 	    boolean goCalled = false;
 	    System.out.println("Starter card: " + starter);
@@ -155,47 +155,205 @@ public class GameModel {
 	                }
 	            }
 
+	            Card play = playableCards.get(selectedIndex);
+	            currentHand.removeCard(play);
+	            playingRun.push(play);
+	            runningTotal += play.getValue();
 
-		if (playerOne.isDealer()) {
-			currentPlayer = playerTwo;
-			secondPlayer = playerOne;
-		}
-		else {
-			currentPlayer = playerOne;
-			secondPlayer = playerTwo;
-		}
-		
-		// main game play loop
-		while (!playerOne.isHandEmpty() && !playerTwo.isHandEmpty()) {
+	            int points = 0;
+	            if (runningTotal == 15 || runningTotal == 31) {
+	                points += 2;
+	            }
 
-			// inner loop resets when both players say go
-			while (!playGo(playerOne) && !playGo(playerTwo)) {
-				if (playerOne.isDealer()) {
-					addToPile(playerTwo, centerPile);
-					addToPile(playerOne, centerPile);
-				}
-				else {
-					addToPile(playerOne, centerPile);
-					addToPile(playerTwo, centerPile);
-				}
-			}
+	            points += scorePair(playingRun);
+	            points += scoreRun(playingRun);
 
-			// reset running total after both players play go
-			runningTotal = 0;
-		}
+	            pegboard.addPoints(currentPlayer, points);
+	            System.out.println(getPlayerName(currentPlayer) + " plays " + play + " for " + points + 
+	            		" point(s). Running total: " + runningTotal);
+	            
+	            if (runningTotal == 31 || bothPlayersCantPlay(currentPlayer, otherPlayer)) {
+	                if (runningTotal != 31) {
+	                    pegboard.addPoints(currentPlayer, 1);
+	                    System.out.println(getPlayerName(currentPlayer) + " scores 1 point for last card.");
+	                }
+
+	                runningTotal = 0;
+	                playingRun.clear();
+	                goCalled = false;
+	            }
+	        }
+	        else {
+	            if (goCalled) {
+	                pegboard.addPoints(otherPlayer, 1);
+	                System.out.println(getPlayerName(currentPlayer) + " says 'Go'. " + getPlayerName(otherPlayer) + " scores 1 point.");
+	                runningTotal = 0;
+	                playingRun.clear();
+	                goCalled = false;
+	            }
+	            else {
+	                System.out.println(getPlayerName(currentPlayer) + " says 'Go'");
+	                goCalled = true;
+	            }
+	        }
+	        Player temp = currentPlayer;
+	        currentPlayer = otherPlayer;
+	        otherPlayer = temp;
+	    }
+	    if (runningTotal > 0 && runningTotal < 31) {
+	        pegboard.addPoints(currentPlayer, 1);
+	        System.out.println(getPlayerName(currentPlayer) + " scores 1 point for final card.");
+	    }
 	}
+	
+	// pegging play for computer
+	public void onePlayerPeggingPlay(Scanner input, Computer computer) {
+	    starter = deck.drawTop();
+	    playingRun = new CardStack();
+	    runningTotal = 0;
 
-	// controller gets user chosen card to discard to center pile
-	private void addToPile(Player player, CardStack pile) {
-		pile.push(discardedCard);
-		player.discard(discardedCard);
+	    Player player1 = playerOne;
+	    Player computerPlayer = computer.getPlayer();
 
-		// add to player score
+	    Player currentPlayer;
+	    Player otherPlayer;
+
+	    if (player1.isDealer()) {
+	        currentPlayer = computerPlayer;
+	        otherPlayer = player1;
+	    }
+	    else {
+	        currentPlayer = player1;
+	        otherPlayer = computerPlayer;
+	    }
+
+	    boolean goCalled = false;
+
+	    while (!player1.isHandEmpty() || !computerPlayer.isHandEmpty()) {
+	        Hand currentHand = currentPlayer.getHand();
+	        List<Card> playableCards = currentHand.getPlayableCards(runningTotal);
+
+	        if (!playableCards.isEmpty()) {
+	            Card play;
+
+	            if (currentPlayer == player1) {
+	                // Human chooses card
+	                System.out.println("Your hand: " + getHand("Player 1"));
+	                System.out.println("Playable cards:");
+	                for (int i = 0; i < playableCards.size(); i++) {
+	                    System.out.println("[" + i + "] " + playableCards.get(i));
+	                }
+
+	                int selectedIndex = -1;
+	                while (true) {
+	                    System.out.print("Enter the number of the card to play: ");
+	                    String selection = input.nextLine().strip();
+	                    try {
+	                        selectedIndex = Integer.parseInt(selection);
+	                        if (selectedIndex >= 0 && selectedIndex < playableCards.size()) {
+	                            break;
+	                        }
+	                        else {
+	                            System.out.println("Index out of range. Try again.");
+	                        }
+	                    } catch (NumberFormatException e) {
+	                        System.out.println("Invalid input. Please enter a number.");
+	                    }
+	                }
+
+	                play = playableCards.get(selectedIndex);
+	            }
+	            else {
+	                // computer chooses the card depending on the Strategy
+	                List<Card> playedCards = new ArrayList<Card>();
+	                for (Card c : playingRun) {
+	                    playedCards.add(c);
+	                }
+	                play = computer.choosePlay(runningTotal, playedCards);
+	                System.out.println("Computer plays " + play);
+	            }
+
+	            currentHand.removeCard(play);
+	            playingRun.push(play);
+	            runningTotal += play.getValue();
+
+	            int points = 0;
+	            if (runningTotal == 15) {
+	                points += 2;
+	            }
+
+	            if (runningTotal == 31) {
+	                points += 2;
+	            }
+
+	            points += scorePair(playingRun);
+	            points += scoreRun(playingRun);
+
+	            pegboard.addPoints(currentPlayer, points);
+	            System.out.println(getPlayerName(currentPlayer) + " scores " + points + " point(s). Running total: " + runningTotal);
+
+	            if (runningTotal == 31 || bothPlayersCantPlay(player1, computerPlayer)) {
+	                if (runningTotal != 31) {
+	                    pegboard.addPoints(currentPlayer, 1);
+	                    System.out.println(getPlayerName(currentPlayer) + " scores 1 point for last card.");
+	                }
+
+	                runningTotal = 0;
+	                playingRun.clear();
+	                goCalled = false;
+	            }
+	        }
+	        else {
+	            if (goCalled) {
+	                pegboard.addPoints(otherPlayer, 1);
+	                System.out.println(getPlayerName(currentPlayer) + " says 'Go'. " + getPlayerName(otherPlayer) + " scores 1 point.");
+	                runningTotal = 0;
+	                playingRun.clear();
+	                goCalled = false;
+	            }
+	            else {
+	                System.out.println(getPlayerName(currentPlayer) + " says 'Go'");
+	                goCalled = true;
+	            }
+	        }
+
+	        Player temp = currentPlayer;
+	        currentPlayer = otherPlayer;
+	        otherPlayer = temp;
+	    }
+
+	    if (runningTotal > 0 && runningTotal < 31) {
+	        pegboard.addPoints(currentPlayer, 1);
+	        System.out.println(getPlayerName(currentPlayer) + " scores 1 point for final card.");
+	    }
 	}
+	
+	private String getPlayerName(Player player) {
+	    if (player == playerOne) {
+	        return "Player 1";
+	    }
+	    else {
+	        return "Player 2";
+	    }
+	}
+	// scores pairs of the current CardStack
+	private int scorePair(CardStack stack) {
+	    List<Card> cards = new ArrayList<>();
+	    for (Card c : stack) {
+	        cards.add(c);
+	    }
 
-	// change card to discard based on controller
-	public void updateDiscardedCard(Card card) {
-		discardedCard = card;
+	    int count = 1;
+	    for (int i=cards.size()-2; i >= 0; i--) {
+	        if (cards.get(i).rank == cards.get(cards.size()-1).rank) {
+	            count++;
+	        }
+	        else break;
+	    }
+	    if (count == 2) return 2;
+	    else if (count == 3) return 6;
+	    else if (count == 4) return 12;
+	    return 0;
 	}
 
 	// TO DO - complete regularPlay functionality
@@ -270,27 +428,6 @@ public class GameModel {
 
 	    return playerOnePlayable.isEmpty() && playerTwoPlayable.isEmpty();
 	}
-
-	// check if player's hand exceeds 31 points
-	public boolean playGo(Player player) {
-		boolean playGo = true;
-
-		// loop through player's hand to check if a card can be played
-		for (Card card : player.getHand().getHand()) {
-
-			if (getCardOrdinal(card)+runningTotal <= 31) {
-				playGo = false;
-				break;
-			}
-		}
-		return playGo;
-	}
-
-	public int getCardOrdinal(Card card) {
-		if (card.rank == Rank.JACK || card.rank == Rank.QUEEN || card.rank == Rank.KING) return 10;
-		return card.rank.ordinal();
-	}
-
 	
 	
 	
@@ -334,12 +471,12 @@ public class GameModel {
 	public String getHand(String player) {
 		String hand = "";
 		if (player.toLowerCase().equals("player 1")) {
-			for (Card c : playerOne.getHand().gethand()) {
+			for (Card c : playerOne.getHand().getHand()) {
 				hand += c.toString() +", ";
 			}
 		}
 		else {
-			for (Card c : playerTwo.getHand().gethand()) {
+			for (Card c : playerTwo.getHand().getHand()) {
 				hand += c.toString() +", ";
 			}
 		}
@@ -348,7 +485,7 @@ public class GameModel {
 	// gets the current crib
 	public String getCrib() {
 		String cribString = "";
-		for (Card c : crib.gethand()) {
+		for (Card c : crib.getHand()) {
 			cribString += c.toString() +", ";
 		}
 		return cribString.substring(0, cribString.length()-2);

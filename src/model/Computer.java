@@ -16,7 +16,7 @@ public class Computer {
     }
 
     public List<Card> chooseDiscarded() {
-        return strategy.chooseDiscards(player.getHand().gethand());
+        return strategy.chooseDiscards(player.getHand().getHand());
     }
 
     public Card choosePlay(int runningTotal, List<Card> played) {

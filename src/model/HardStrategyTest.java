@@ -25,9 +25,9 @@ public class HardStrategyTest {
 		hand.addCard(c5);
 		hand.addCard(c6);
 		
-		List<Card> discards = hard.chooseDiscards(hand.gethand());
-		assertTrue(hand.gethand().contains(discards.get(0)));
-		assertTrue(hand.gethand().contains(discards.get(1)));
+		List<Card> discards = hard.chooseDiscards(hand.getHand());
+		assertTrue(hand.getHand().contains(discards.get(0)));
+		assertTrue(hand.getHand().contains(discards.get(1)));
 	}
 	
 	@Test
@@ -47,7 +47,7 @@ public class HardStrategyTest {
 		
 		Hand hand2 = new Hand();
 		
-		Card played = hard.choosePeggingPlayCard(hand.getPlayableCards(0), 0, hand2.gethand());
-		assertTrue(hand.gethand().contains(played));
+		Card played = hard.choosePeggingPlayCard(hand.getPlayableCards(0), 0, hand2.getHand());
+		assertTrue(hand.getHand().contains(played));
 	}
 }
