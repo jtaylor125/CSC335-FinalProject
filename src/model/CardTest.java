@@ -35,4 +35,23 @@ public class CardTest {
 		assertEquals(c13.getValue(), 10);
 	}
 	
+	@Test
+	void testCardTwo() {
+		Card c1 = Card.get("ACE", "SPADES");
+		Card c2 = Card.get("TWO", "DIAMONDS");
+		Card c3 = Card.get("THREE", "CLUBS");
+		Card c4 = Card.get("FOUR", "HEARTS");
+		
+		assertEquals(c1.getValue(), 1);
+		assertEquals(c2.getValue(), 2);
+		assertEquals(c3.getValue(), 3);
+		assertEquals(c4.getValue(), 4);
+	}
+	
+	@Test
+	void testToString() {
+		Card c1 = Card.get("ACE", "SPADES");
+		assertEquals(c1.toString(),"ACE SPADES");
+	}
+	
 }

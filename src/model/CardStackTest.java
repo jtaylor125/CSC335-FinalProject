@@ -10,7 +10,7 @@ public class CardStackTest {
 	
 	@Test
 	void testCardStack() {
-		CardStack stack = new CardStack();
+		CardStack stack = new CardStack(); 
 		assertEquals(stack.size(),0);
 		assertTrue(stack.isEmpty());
 	}
