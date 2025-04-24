@@ -168,4 +168,16 @@ public class Hand {
 		}
 		return 0;
 	}
+	
+	
+	
+	public List<Card> getPlayableCards(int currentTotal) {
+	    List<Card> playable = new ArrayList<>();
+	    for (Card card : hand) {
+	        if (card.getValue() + currentTotal <= 31) {
+	            playable.add(card);
+	        }
+	    }
+	    return playable;
+	}
 }

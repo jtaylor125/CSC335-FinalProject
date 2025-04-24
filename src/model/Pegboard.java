@@ -3,43 +3,135 @@ package model;
 import java.util.HashMap;
 
 public class Pegboard {
-	private static final int WINNING_SCORE = 121;
+    private static final int WINNING_SCORE = 121;
 
-	private HashMap<Player, Integer> score;
+    private static class PegPair {
+        int[] pegs = new int[2];
+        int activePeg = 0;
 
-	public Pegboard() {
-		score = new HashMap<>();
-	}
+        void addPoints(int points) {
+            int moving = activePeg;
+            int stationary;
 
-	// this method initalizes player scores if needed
-	public void addPlayer(Player player) {
-		if (!score.containsKey(player)) {
-			score.put(player, 0);
-		}
-	}
+            if (activePeg == 0) {
+                stationary = 1;
+            }
+            else {
+                stationary = 0;
+            }
 
-	// add points to a player's score
-	public void addPoints(Player player, int points) {
-		addPlayer(player);  // ensure player is tracked
+            int base = pegs[stationary];
+            int newPosition = base + points;
 
-		int currentScore = score.get(player);
-		int newScore = currentScore + points;
-		score.put(player, newScore);
-	}
+            if (pegs[moving] == pegs[stationary] && points == 0) {
+                newPosition += 1;
+            }
 
-	// get the score of a player
-	public int getScore(Player player) {
-		addPlayer(player);  // ensure player is tracked
-		return score.get(player);
-	}
+            pegs[moving] = newPosition;
 
-	// check if a player has won
-	public boolean hasWon(Player player) {
-		return getScore(player) >= WINNING_SCORE;
-	}
-	
-	// returns a copy of the hashmap that keeps track of scores
-	public HashMap<Player, Integer> getAllScores() {
-		return new HashMap<Player, Integer>(score);
-	}
+            if (activePeg == 0) {
+                activePeg = 1;
+            }
+            else {
+                activePeg = 0;
+            }
+        }
+
+        void reset() {
+            pegs[0] = 0;
+            pegs[1] = 0;
+            activePeg = 0;
+        }
+
+        int current() {
+            if (pegs[0] > pegs[1]) {
+                return pegs[0];
+            }
+            else {
+                return pegs[1];
+            }
+        }
+
+        int previous() {
+            if (pegs[0] < pegs[1]) {
+                return pegs[0];
+            }
+            else {
+                return pegs[1];
+            }
+        }
+
+        boolean hasWon() {
+            if (current() >= WINNING_SCORE) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+    }
+
+    private final HashMap<Player, PegPair> playerPegs;
+
+    public Pegboard() {
+        playerPegs = new HashMap<>();
+    }
+
+    private void ensurePlayer(Player player) {
+        if (!playerPegs.containsKey(player)) {
+            playerPegs.put(player, new PegPair());
+        }
+    }
+
+    public void addPoints(Player player, int points) {
+        ensurePlayer(player);
+        PegPair pegs = playerPegs.get(player);
+        pegs.addPoints(points);
+        player.addScore(points); // Sync with Player object
+    }
+
+    public int getFrontPeg(Player player) {
+        ensurePlayer(player);
+        PegPair pegs = playerPegs.get(player);
+        return pegs.current();
+    }
+
+    public int getBackPeg(Player player) {
+        ensurePlayer(player);
+        PegPair pegs = playerPegs.get(player);
+        return pegs.previous();
+    }
+
+    public boolean hasWon(Player player) {
+        ensurePlayer(player);
+        PegPair pegs = playerPegs.get(player);
+        return pegs.hasWon();
+    }
+
+    public int getScore(Player player) {
+        return getFrontPeg(player);
+    }
+
+    public void resetScores() {
+        for (PegPair pegs : playerPegs.values()) {
+            pegs.reset();
+        }
+    }
+
+    public String toString() {
+        String result = "Current Pegboard:\n";
+
+        for (Player player : playerPegs.keySet()) {
+            String role = "Player";
+
+            if (player.isDealer()) {
+                role = "Dealer";
+            }
+
+            PegPair pegs = playerPegs.get(player);
+            result += role + " Pegs: Front Peg: " + pegs.pegs[0] + ", Last Peg: " + pegs.pegs[1] + "\n";
+        }
+
+        return result;
+    }
 }

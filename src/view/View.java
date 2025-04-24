@@ -26,11 +26,13 @@ public class View {
 				onePlayer = false;
 				System.out.println("Two player mode chosen");
 				break;
-			} else if (input.equals("one")){
+			}
+			else if (input.equals("one")){
 				onePlayer = true;
 				System.out.println("One player mode chosen");
 				break;
-			} else {
+			}
+			else {
 				System.out.println("Invalid entry, please enter 'one' or 'two'");
 				input = systemIn.nextLine().strip();
 			}
@@ -38,7 +40,8 @@ public class View {
 		
 		if (onePlayer) {
 			handleOnePlayer(systemIn, game);
-		} else {
+		}
+		else {
 			handleTwoPlayers(systemIn, game);
 		}
 	}
@@ -50,43 +53,68 @@ public class View {
 	public static void handleTwoPlayers(Scanner systemIn, GameModel game) {
 		System.out.println("Assign Player 1 and Player 2, type anything to start");
 		String input = systemIn.nextLine().strip();
-		
+
 		game.determineDealer();
 		
-		String dealer = game.getDealer();
-		
-		System.out.println(dealer + " is dealer");
-		
-		game.deal();
-		
-		System.out.println("Player 1 hand: " + game.getHand("Player 1"));
-		
-		System.out.println("Player 1 choose first card to discard (enter as seen, e.g. 'QUEEN DIAMONDS')");
-		String discardOne = systemIn.nextLine().strip();
-		game.discard("Player 1", discardOne);
-		System.out.println("Player 1 hand: " + game.getHand("Player 1"));
-		
-		System.out.println("Player 1 choose second card to discard (enter as seen, e.g. 'QUEEN DIAMONDS')");
-		String discardTwo = systemIn.nextLine().strip();
-		game.discard("Player 1", discardTwo);
-		System.out.println("Player 1 hand: " + game.getHand("Player 1"));
-		System.out.println("");
-		
-		System.out.println("Player 2 hand: " + game.getHand("Player 2"));
-		
-		System.out.println("Player 2 choose first card to discard (enter as seen, e.g. 'QUEEN DIAMONDS')");
-		discardOne = systemIn.nextLine().strip();
-		game.discard("Player 2", discardOne);
-		System.out.println("Player 2 hand: " + game.getHand("Player 2"));
-		
-		System.out.println("Player 2 choose second card to discard (enter as seen, e.g. 'QUEEN DIAMONDS')");
-		discardTwo = systemIn.nextLine().strip();
-		game.discard("Player 2", discardTwo);
-		System.out.println("Player 2 hand: " + game.getHand("Player 2"));
-		System.out.println("");
-		
-		System.out.println("Crib: " + game.getCrib());
-		
+		while (game.checkWin() == null) {
+			String dealer = game.getDealer();
+			System.out.println(dealer + " is dealer");
+	
+			game.deal();
+	
+			System.out.println("Player 1 hand: " + game.getHand("Player 1"));
+			System.out.println("Player 1 choose first card to discard (enter as seen, e.g. 'QUEEN DIAMONDS')");
+			String discardOne = systemIn.nextLine().strip().toUpperCase();
+			while (!game.getHand("Player 1").contains(discardOne)) {
+				System.out.println("Invalid card. Try again:");
+				discardOne = systemIn.nextLine().strip().toUpperCase();
+			}
+			game.discard("Player 1", discardOne);
+			System.out.println("Player 1 hand: " + game.getHand("Player 1"));
+	
+			System.out.println("Player 1 choose second card to discard (enter as seen, e.g. 'QUEEN DIAMONDS')");
+			String discardTwo = systemIn.nextLine().strip().toUpperCase();
+			while (!game.getHand("Player 1").contains(discardTwo)) {
+				System.out.println("Invalid card. Try again:");
+				discardTwo = systemIn.nextLine().strip().toUpperCase();
+			}
+			game.discard("Player 1", discardTwo);
+			System.out.println("Player 1 hand: " + game.getHand("Player 1"));
+			System.out.println("");
+	
+			System.out.println("Player 2 hand: " + game.getHand("Player 2"));
+			System.out.println("Player 2 choose first card to discard (enter as seen, e.g. 'QUEEN DIAMONDS')");
+			discardOne = systemIn.nextLine().strip().toUpperCase();
+			while (!game.getHand("Player 2").contains(discardOne)) {
+				System.out.println("Invalid card. Try again:");
+				discardOne = systemIn.nextLine().strip().toUpperCase();
+			}
+			game.discard("Player 2", discardOne);
+			System.out.println("Player 2 hand: " + game.getHand("Player 2"));
+	
+			System.out.println("Player 2 choose second card to discard (enter as seen, e.g. 'QUEEN DIAMONDS')");
+			discardTwo = systemIn.nextLine().strip().toUpperCase();
+			while (!game.getHand("Player 2").contains(discardTwo)) {
+				System.out.println("Invalid card. Try again:");
+				discardTwo = systemIn.nextLine().strip().toUpperCase();
+			}
+			game.discard("Player 2", discardTwo);
+			System.out.println("Player 2 hand: " + game.getHand("Player 2"));
+			System.out.println("");
+	
+			System.out.println("Crib: " + game.getCrib());
+			System.out.println("Starting pegging play...");
+			game.peggingPlay(systemIn);
+			game.regularPlay();
+			
+			System.out.println("Player 1 Score: " + game.getScore("player 1"));
+			System.out.println("Player 2 Score: " + game.getScore("player 2"));
+			System.out.println(game.getPegboard());
+			game.reset();
+			System.out.println("NEW ROUND \n______________________________________________________________________________________"
+					+ "__________________________________________________________________");
+		}
+		System.out.println(game.checkWin());
 		return;
 	}
 	
