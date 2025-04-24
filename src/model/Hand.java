@@ -22,7 +22,7 @@ public class Hand {
 	public void removeCard(Card card) {
 		this.hand.remove(card);
 	}
-
+	
 	public boolean isEmpty() {
 		return hand.isEmpty();
 	}

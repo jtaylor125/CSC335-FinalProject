@@ -4,12 +4,14 @@ import java.util.HashMap;
 
 public class Pegboard {
     private static final int WINNING_SCORE = 121;
-
+    
+    // defined inside of pegboard for encapsulation, as it is only used in pegboard
     private static class PegPair {
         int[] pegs = new int[2];
         int activePeg = 0;
 
         void addPoints(int points) {
+        	if (points == 0) return;
             int moving = activePeg;
             int stationary;
 
@@ -29,7 +31,7 @@ public class Pegboard {
 
             pegs[moving] = newPosition;
 
-            if (activePeg == 0) {
+            if (pegs[0] > pegs[1]) {
                 activePeg = 1;
             }
             else {
@@ -87,7 +89,7 @@ public class Pegboard {
         ensurePlayer(player);
         PegPair pegs = playerPegs.get(player);
         pegs.addPoints(points);
-        player.addScore(points); // Sync with Player object
+        player.addScore(points);
     }
 
     public int getFrontPeg(Player player) {
@@ -127,9 +129,8 @@ public class Pegboard {
             if (player.isDealer()) {
                 role = "Dealer";
             }
-
             PegPair pegs = playerPegs.get(player);
-            result += role + " Pegs: Front Peg: " + pegs.pegs[0] + ", Last Peg: " + pegs.pegs[1] + "\n";
+            result += role + " Pegs: Peg 1: " + pegs.pegs[0] + ", Peg 2: " + pegs.pegs[1] + "\n";
         }
 
         return result;
