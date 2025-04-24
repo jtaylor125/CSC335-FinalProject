@@ -6,6 +6,8 @@ public class Player {
 	private int score;
 	
 	private boolean isDealer;
+
+	private int winCount;
 	
 	public Player() {
 		this.playerHand = new Hand();
@@ -13,6 +15,8 @@ public class Player {
 		this.score = 0;
 		
 		this.isDealer = false;
+
+		this.winCount = 0;
 	}
 	
 	
@@ -55,5 +59,9 @@ public class Player {
 	
 	public int scoreHand(Card starter) {
 		return playerHand.score(starter);
+	}
+
+	public int playerWon() {
+		return ++winCount;
 	}
 }
