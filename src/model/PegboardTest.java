@@ -76,6 +76,6 @@ public class PegboardTest {
         board.addPoints(player, 2);
         board.addPoints(player, 3);
         assertEquals(board.toString(), "Current Pegboard:\n"
-        		+ "Player Pegs: Front Peg: 2, Last Peg: 5\n");
+        		+ "Player Pegs: Peg 1: 2, Peg 2: 5\n");
     }
 }

@@ -1,3 +1,8 @@
+/* Authors: Andy Zhang
+ * Description: This class is used to simulate a game of Cribbage. It is composed of many Classes
+ * such as Player, Deck, Hand, CardStack, and Pegboard.
+ * 
+ */
 package model;
 
 import java.util.ArrayList;
@@ -10,17 +15,13 @@ public class GameModel {
 	private Player playerTwo;
 	
 	private Deck deck;
-	
 	private Hand crib;
-	
 	private Card starter;
-	
 	private CardStack playingRun;
-	
 	private Pegboard pegboard;
-
 	private int runningTotal;
 	
+	// Constructor
 	public GameModel() {
 		playerOne = new Player();
 		playerTwo = new Player();
@@ -128,7 +129,7 @@ public class GameModel {
 	    while (!playerOne.isHandEmpty() || !playerTwo.isHandEmpty()) {
 	        Hand currentHand = currentPlayer.getHand();
 	        List<Card> playableCards = currentHand.getPlayableCards(runningTotal);
-
+	        
 	        if (!playableCards.isEmpty()) {
 	            System.out.println(getPlayerName(currentPlayer) + ", select a card to play:");
 	            for (int i=0; i < playableCards.size(); i++) {
@@ -160,11 +161,7 @@ public class GameModel {
 	            runningTotal += play.getValue();
 
 	            int points = 0;
-	            if (runningTotal == 15) {
-	                points += 2;
-	            }
-
-	            if (runningTotal == 31) {
+	            if (runningTotal == 15 || runningTotal == 31) {
 	                points += 2;
 	            }
 
@@ -208,6 +205,129 @@ public class GameModel {
 	        System.out.println(getPlayerName(currentPlayer) + " scores 1 point for final card.");
 	    }
 	}
+	
+	// pegging play for computer
+	public void onePlayerPeggingPlay(Scanner input, Computer computer) {
+	    starter = deck.drawTop();
+	    playingRun = new CardStack();
+	    runningTotal = 0;
+
+	    Player player1 = playerOne;
+	    Player computerPlayer = computer.getPlayer();
+
+	    Player currentPlayer;
+	    Player otherPlayer;
+
+	    if (player1.isDealer()) {
+	        currentPlayer = computerPlayer;
+	        otherPlayer = player1;
+	    }
+	    else {
+	        currentPlayer = player1;
+	        otherPlayer = computerPlayer;
+	    }
+
+	    boolean goCalled = false;
+
+	    while (!player1.isHandEmpty() || !computerPlayer.isHandEmpty()) {
+	        Hand currentHand = currentPlayer.getHand();
+	        List<Card> playableCards = currentHand.getPlayableCards(runningTotal);
+
+	        if (!playableCards.isEmpty()) {
+	            Card play;
+
+	            if (currentPlayer == player1) {
+	                // Human chooses card
+	                System.out.println("Your hand: " + getHand("Player 1"));
+	                System.out.println("Playable cards:");
+	                for (int i = 0; i < playableCards.size(); i++) {
+	                    System.out.println("[" + i + "] " + playableCards.get(i));
+	                }
+
+	                int selectedIndex = -1;
+	                while (true) {
+	                    System.out.print("Enter the number of the card to play: ");
+	                    String selection = input.nextLine().strip();
+	                    try {
+	                        selectedIndex = Integer.parseInt(selection);
+	                        if (selectedIndex >= 0 && selectedIndex < playableCards.size()) {
+	                            break;
+	                        }
+	                        else {
+	                            System.out.println("Index out of range. Try again.");
+	                        }
+	                    } catch (NumberFormatException e) {
+	                        System.out.println("Invalid input. Please enter a number.");
+	                    }
+	                }
+
+	                play = playableCards.get(selectedIndex);
+	            }
+	            else {
+	                // computer chooses the card depending on the Strategy
+	                List<Card> playedCards = new ArrayList<Card>();
+	                for (Card c : playingRun) {
+	                    playedCards.add(c);
+	                }
+	                play = computer.choosePlay(runningTotal, playedCards);
+	                System.out.println("Computer plays " + play);
+	            }
+
+	            currentHand.removeCard(play);
+	            playingRun.push(play);
+	            runningTotal += play.getValue();
+
+	            int points = 0;
+	            if (runningTotal == 15) {
+	                points += 2;
+	            }
+
+	            if (runningTotal == 31) {
+	                points += 2;
+	            }
+
+	            points += scorePair(playingRun);
+	            points += scoreRun(playingRun);
+
+	            pegboard.addPoints(currentPlayer, points);
+	            System.out.println(getPlayerName(currentPlayer) + " scores " + points + " point(s). Running total: " + runningTotal);
+
+	            if (runningTotal == 31 || bothPlayersCantPlay(player1, computerPlayer)) {
+	                if (runningTotal != 31) {
+	                    pegboard.addPoints(currentPlayer, 1);
+	                    System.out.println(getPlayerName(currentPlayer) + " scores 1 point for last card.");
+	                }
+
+	                runningTotal = 0;
+	                playingRun.clear();
+	                goCalled = false;
+	            }
+	        }
+	        else {
+	            if (goCalled) {
+	                pegboard.addPoints(otherPlayer, 1);
+	                System.out.println(getPlayerName(currentPlayer) + " says 'Go'. " + getPlayerName(otherPlayer) + " scores 1 point.");
+	                runningTotal = 0;
+	                playingRun.clear();
+	                goCalled = false;
+	            }
+	            else {
+	                System.out.println(getPlayerName(currentPlayer) + " says 'Go'");
+	                goCalled = true;
+	            }
+	        }
+
+	        Player temp = currentPlayer;
+	        currentPlayer = otherPlayer;
+	        otherPlayer = temp;
+	    }
+
+	    if (runningTotal > 0 && runningTotal < 31) {
+	        pegboard.addPoints(currentPlayer, 1);
+	        System.out.println(getPlayerName(currentPlayer) + " scores 1 point for final card.");
+	    }
+	}
+	
 	private String getPlayerName(Player player) {
 	    if (player == playerOne) {
 	        return "Player 1";
@@ -368,7 +488,7 @@ public class GameModel {
 		for (Card c : crib.gethand()) {
 			cribString += c.toString() +", ";
 		}
-		return cribString.substring(0,cribString.length()-2);
+		return cribString.substring(0, cribString.length()-2);
 	}
 	// gets the score of a player using the front peg
 	public int getScore(String playerName) {
@@ -387,6 +507,11 @@ public class GameModel {
 		if (pegboard.hasWon(playerOne)) return "Player 1 wins!";
 		else if (pegboard.hasWon(playerTwo)) return "Player 2 wins!";
 		return null;
+		
+	}
+	
+	public Player getPlayerTwo() {
+		return playerTwo;
 		
 	}
 }

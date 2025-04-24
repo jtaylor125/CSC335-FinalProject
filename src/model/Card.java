@@ -12,7 +12,7 @@ public class Card {
 	private Card(Rank r, Suit s){
 		this.rank = r;
 		this.suit = s;
-
+		
 	}
 
 	static {
