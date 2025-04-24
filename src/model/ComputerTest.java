@@ -38,8 +38,8 @@ public class ComputerTest {
 
 		
 		List<Card> discards = c.chooseDiscarded();
-		assertTrue(p.getHand().gethand().contains(discards.get(0)));
-		assertTrue(p.getHand().gethand().contains(discards.get(1)));
+		assertTrue(p.getHand().getHand().contains(discards.get(0)));
+		assertTrue(p.getHand().getHand().contains(discards.get(1)));
 	}
 	
 	@Test
@@ -62,7 +62,7 @@ public class ComputerTest {
 		
 		Hand hand2 = new Hand();
 		
-		Card played = c.choosePlay(0,hand2.gethand());
-		assertTrue(p.getHand().gethand().contains(played));
+		Card played = c.choosePlay(0,hand2.getHand());
+		assertTrue(p.getHand().getHand().contains(played));
 	}
 }

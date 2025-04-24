@@ -70,7 +70,7 @@ public class HandTest {
 		h.addCard(c4);
 		h.addCard(c5);
 		
-		List<Card> handList = h.gethand();
+		List<Card> handList = h.getHand();
 		
 		assertEquals(handList.get(0),c1);
 		assertEquals(handList.get(1),c2);
