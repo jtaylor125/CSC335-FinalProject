@@ -15,10 +15,6 @@ public class Hand {
 
 	}
 	
-	public int calculateHandScore() {
-		return 0;
-	}
-	
 	public void addCard(Card card) {
 		this.hand.add(card);
 	}
@@ -26,7 +22,7 @@ public class Hand {
 	public void removeCard(Card card) {
 		this.hand.remove(card);
 	}
-
+	
 	public boolean isEmpty() {
 		return hand.isEmpty();
 	}
@@ -171,5 +167,17 @@ public class Hand {
 			}
 		}
 		return 0;
+	}
+	
+	
+	
+	public List<Card> getPlayableCards(int currentTotal) {
+	    List<Card> playable = new ArrayList<>();
+	    for (Card card : hand) {
+	        if (card.getValue() + currentTotal <= 31) {
+	            playable.add(card);
+	        }
+	    }
+	    return playable;
 	}
 }

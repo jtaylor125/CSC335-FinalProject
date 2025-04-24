@@ -1,40 +1,43 @@
+/* Authors: Andy Zhang
+ * Description: This class is used to simulate a game of Cribbage. It is composed of many Classes
+ * such as Player, Deck, Hand, CardStack, and Pegboard.
+ * 
+ */
 package model;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Scanner;
 
 public class GameModel {
 	private Player playerOne;
 	private Player playerTwo;
 	
 	private Deck deck;
-	
 	private Hand crib;
+
 
 	private Card discardedCard;
 	
 	private Card starter;
-	
 	private CardStack playingRun;
-	
 	private Pegboard pegboard;
-
 	private int runningTotal;
 	
+	// Constructor
 	public GameModel() {
 		playerOne = new Player();
 		playerTwo = new Player();
 		
-		// TO DO - complete Deck class
 		deck = new Deck();
 		
-		// TO DO - complete Hand class
 		crib = new Hand();
 		
-		// starter will be assigned in pegging play
 		starter = null;
 		
-		// playingRun will be assigned in pegging play
 		playingRun = null;
 		
-		// TO DO - complete pegboard cloass
 		pegboard = new Pegboard();
 
 		// initiate running total
@@ -64,19 +67,14 @@ public class GameModel {
 		else {
 			playerOne.setDealer(true);
 		}
-
-		// remove cards from players hands add to cardStack
-		//playerOne.discard(card1);
-		//playerTwo.discard(card2);
-
-		// drawn cards return to the deck
-
+		playerOne.discard(card1);
+		playerTwo.discard(card2);
 
 		// reshuffle deck
+		deck.buildNewDeck();
 		deck.shuffle();
 	}
 	
-	// TO DO - complete deal functionality
 	// Each player is dealt 6 cards to their hand. They discard two, which makes up the
 	// crib.
 	public void deal() {
@@ -98,9 +96,26 @@ public class GameModel {
 		// before choosing which one to discard
 	}
 	
+	public void discard(String player, String discard) {
+		String rank = discard.substring(0, discard.indexOf(" "));
+		String suit = discard.substring(discard.indexOf(" ")+1);
+		Card discardCard = Card.get(rank,suit);
+		
+		if (player.toLowerCase().equals("player 1")) {
+			crib.addCard(discardCard);
+			playerOne.getHand().removeCard(discardCard);
+		}
+		else {
+			crib.addCard(discardCard);
+			playerTwo.getHand().removeCard(discardCard);;
+		}
+	}
+	
 	// Flip the starter card, the top card on the deck. Players play cards on the 
 	// playingRun and can score points for various things. One important aspect of this
 	// is the count.
+
+
 	public void peggingPlay() {
 		// get starter card
 		starter = deck.drawRandom();
@@ -108,11 +123,38 @@ public class GameModel {
 		// create center pile stack
 		CardStack centerPile = new CardStack();
 
-		// pass starter card to method in Hand class
 
-		// set current player and second player
-		Player currentPlayer;
-		Player secondPlayer;
+	    boolean goCalled = false;
+	    System.out.println("Starter card: " + starter);
+	    while (!playerOne.isHandEmpty() || !playerTwo.isHandEmpty()) {
+	        Hand currentHand = currentPlayer.getHand();
+	        List<Card> playableCards = currentHand.getPlayableCards(runningTotal);
+	        
+	        if (!playableCards.isEmpty()) {
+	            System.out.println(getPlayerName(currentPlayer) + ", select a card to play:");
+	            for (int i=0; i < playableCards.size(); i++) {
+	                System.out.println(i + ": " + playableCards.get(i));
+	            }
+
+	            int selectedIndex = -1;
+	            while (true) {
+	                System.out.print("Enter the number of the card to play: ");
+	                String selection = input.nextLine().strip();
+	                // input validation
+	                try {
+	                    selectedIndex = Integer.parseInt(selection);
+	                    if (selectedIndex >= 0 && selectedIndex < playableCards.size()) {
+	                        break;
+	                    }
+	                    else {
+	                        System.out.println("Not a valid option, Try again.");
+	                    }
+	                }
+	                catch (NumberFormatException e) {
+	                    System.out.println("Invalid input, Please enter a number.");
+	                }
+	            }
+
 
 		if (playerOne.isDealer()) {
 			currentPlayer = playerTwo;
@@ -161,21 +203,72 @@ public class GameModel {
 	// their crib as well. 
 	public void regularPlay() {
 		int plrOnePts = playerOne.scoreHand(starter);
+		System.out.println("Player 1 scores " + plrOnePts);
 		int plrTwoPts = playerTwo.scoreHand(starter);
-
+		System.out.println("Player 2 scores " + plrTwoPts);
+		
 		// add the scores to the pegboard
 		pegboard.addPoints(playerOne, plrOnePts);
-		pegboard.addPoints(playerTwo, plrOnePts);
+		pegboard.addPoints(playerTwo, plrTwoPts);
+		
+		System.out.println("Crib: " + getCrib());
 
 		// the dealer scores the crib
 		if (playerOne.isDealer()) {
 			int cribPts = crib.score(starter);
 			pegboard.addPoints(playerOne, cribPts);
+			System.out.println("Player 1 scores " + cribPts + " from the crib");
 		}
 		else {
 			int cribPts = crib.score(starter);
 			pegboard.addPoints(playerTwo, cribPts);
+			System.out.println("Player 2 scores " + cribPts + " from the crib");
 		}
+		
+	}
+	// Checks for a runs in the current pegging play, and only scores the longest one
+	private int scoreRun(CardStack stack) {
+	    List<Card> cards = new ArrayList<>();
+	    for (Card c : stack) {
+	        cards.add(c);
+	    }
+
+	    int maxRun = 0;
+	    for (int len = 3; len <= cards.size(); len++) {
+	        List<Card> sub = cards.subList(cards.size() - len, cards.size());
+	        if (isRun(sub)) {
+	            maxRun = len;
+	        }
+	    }
+	    return maxRun;
+	}
+	// helper method for scoreRun
+	private boolean isRun(List<Card> cards) {
+	    if (cards.size() < 3) {
+	        return false;
+	    }
+
+	    List<Integer> values = new ArrayList<>();
+	    for (Card card : cards) {
+	        values.add(card.rank.ordinal());
+	    }
+
+	    Collections.sort(values);
+	    for (int i=1; i < values.size(); i++) {
+	        if (values.get(i) != values.get(i - 1) + 1) {
+	            return false;
+	        }
+	    }
+
+	    return true;
+	}
+	
+	// checks if both players can no longer play
+	private boolean bothPlayersCantPlay(Player p1, Player p2) {
+	    List<Card> playerOnePlayable = p1.getHand().getPlayableCards(runningTotal);
+	    List<Card> playerTwoPlayable = p2.getHand().getPlayableCards(runningTotal);
+
+	    return playerOnePlayable.isEmpty() && playerTwoPlayable.isEmpty();
 	}
 
 	// check if player's hand exceeds 31 points
@@ -199,14 +292,23 @@ public class GameModel {
 	}
 
 	
+	
+	
 	// TO DO - complete reset functionality
 	// reset the deck, shuffle, and switch dealers
+	// completed
 	public void reset() {
-		
+		playerOne.getHand().clear();
+		playerTwo.getHand().clear();
+		starter = null;
+		runningTotal = 0;
+		crib.clear();
+		playingRun.clear();
+		deck.buildNewDeck();
 		deck.shuffle();
 		switchDealers();
 	}
-	
+	// completed
 	private void switchDealers() {
 		// switch dealers
 		if (playerOne.isDealer()) {
@@ -218,4 +320,62 @@ public class GameModel {
 			playerTwo.setDealer(false);
 		}
 	}
+	
+	// getters
+	public String getDealer() {
+		if (playerOne.isDealer()) {
+			return "Player 1";
+		}
+		else {
+			return "Player 2";
+		}
+	}
+	// gets the hand of a player
+	public String getHand(String player) {
+		String hand = "";
+		if (player.toLowerCase().equals("player 1")) {
+			for (Card c : playerOne.getHand().gethand()) {
+				hand += c.toString() +", ";
+			}
+		}
+		else {
+			for (Card c : playerTwo.getHand().gethand()) {
+				hand += c.toString() +", ";
+			}
+		}
+		return hand.substring(0,hand.length()-2);
+	}
+	// gets the current crib
+	public String getCrib() {
+		String cribString = "";
+		for (Card c : crib.gethand()) {
+			cribString += c.toString() +", ";
+		}
+		return cribString.substring(0, cribString.length()-2);
+	}
+	// gets the score of a player using the front peg
+	public int getScore(String playerName) {
+	    if (playerName.toLowerCase().equals("player 1")) {
+	        return pegboard.getScore(playerOne);
+	    }
+	    else {
+	        return pegboard.getScore(playerTwo);
+	    }
+	}
+	public String getPegboard() {
+		return pegboard.toString();
+	}
+	
+	public String checkWin() {
+		if (pegboard.hasWon(playerOne)) return "Player 1 wins!";
+		else if (pegboard.hasWon(playerTwo)) return "Player 2 wins!";
+		return null;
+		
+	}
+	
+	public Player getPlayerTwo() {
+		return playerTwo;
+		
+	}
 }
+

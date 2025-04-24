@@ -6,13 +6,13 @@ public class Card {
 	
 	public final Suit suit;
 	public final Rank rank;
-	private static HashMap<String, Card> CARDS;
+	private static HashMap<String, Card> CARDS = new HashMap<>();
 	
 	
 	private Card(Rank r, Suit s){
 		this.rank = r;
 		this.suit = s;
-
+		
 	}
 
 	static {
@@ -30,10 +30,20 @@ public class Card {
 		return CARDS.get(temp);
 	}
 	
+	public static Card get(String rank, String suit) {
+		String temp = rank.toUpperCase() + " OF " + suit.toUpperCase();
+		return CARDS.get(temp);
+	}
+	
 	public int getValue() {
-		if (rank.ordinal() >= Rank.JACK.ordinal()) {
+		if (rank.ordinal() >= Rank.TEN.ordinal()) {
 			return 10;
 		}
 		return rank.ordinal() + 1;
+	}
+	
+	@Override
+	public String toString() {
+		return rank.toString() + " " + suit.toString();
 	}
 } // end class

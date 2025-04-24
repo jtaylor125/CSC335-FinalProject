@@ -8,7 +8,6 @@ public class Player {
 	private boolean isDealer;
 	
 	public Player() {
-		// TO DO - finish Hand class
 		this.playerHand = new Hand();
 		
 		this.score = 0;
