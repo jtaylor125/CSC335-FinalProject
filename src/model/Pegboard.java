@@ -1,4 +1,4 @@
-/* Authors: Andy Zhang, Nathan Crossman, Jacob, Talyor
+/* Authors: Andy Zhang, Nathan Crossman, Jacob Taylor, Tristan Emma
  * Course: CSC 335
  * Description: An instance of this class represents a Pegboard inside
  * of a Cribbage game, it tracks the scores of two players using a smaller

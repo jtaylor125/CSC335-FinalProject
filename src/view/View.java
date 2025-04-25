@@ -1,3 +1,8 @@
+/* Authors: Andy Zhang, Nathan Crossman, Jacob Taylor, Tristan Emma
+ * Course: CSC 335
+ * Description: The User Interface for the cribbage game.
+ */
+
 package view;
 
 import java.util.List;
