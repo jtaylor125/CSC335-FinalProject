@@ -169,12 +169,16 @@ public class GameModel {
 	            points += scoreRun(playingRun);
 
 	            pegboard.addPoints(currentPlayer, points);
+
+				if (checkIfPlayerWon(currentPlayer, otherPlayer)) break;
+
 	            System.out.println(getPlayerName(currentPlayer) + " plays " + play + " for " + points + 
 	            		" point(s). Running total: " + runningTotal);
 	            
 	            if (runningTotal == 31 || bothPlayersCantPlay(currentPlayer, otherPlayer)) {
 	                if (runningTotal != 31) {
 	                    pegboard.addPoints(currentPlayer, 1);
+						if (checkIfPlayerWon(currentPlayer, otherPlayer)) break;
 	                    System.out.println(getPlayerName(currentPlayer) + " scores 1 point for last card.");
 	                }
 
@@ -186,6 +190,7 @@ public class GameModel {
 	        else {
 	            if (goCalled) {
 	                pegboard.addPoints(otherPlayer, 1);
+					if (checkIfPlayerWon(currentPlayer, otherPlayer)) break;
 	                System.out.println(getPlayerName(currentPlayer) + " says 'Go'. " + getPlayerName(otherPlayer) + " scores 1 point.");
 	                runningTotal = 0;
 	                playingRun.clear();
@@ -202,8 +207,35 @@ public class GameModel {
 	    }
 	    if (runningTotal > 0 && runningTotal < 31) {
 	        pegboard.addPoints(currentPlayer, 1);
-	        System.out.println(getPlayerName(currentPlayer) + " scores 1 point for final card.");
+			if (checkIfPlayerWon(currentPlayer, otherPlayer));
+	        else System.out.println(getPlayerName(currentPlayer) + " scores 1 point for final card.");
 	    }
+	}
+
+	private boolean checkIfPlayerWon(Player player1, Player player2) {
+		if (pegboard.hasWon(player1)) {
+			if (getPlayerName(player1).equals("Player 1")) {
+				playerOne.playerWon();
+				System.out.println(getPlayerName(player1) + " has won!");
+			}
+			else {
+				playerTwo.playerWon();
+				System.out.println(getPlayerName(player2) + " has won!");
+			}
+			return true;
+		}
+		else if (pegboard.hasWon(player2)) {
+			if (getPlayerName(player2).equals("Player 1")) {
+				playerOne.playerWon();
+				System.out.println(getPlayerName(player1) + " has won!");
+			}
+			else {
+				playerTwo.playerWon();
+				System.out.println(getPlayerName(player2) + " has won!");
+			}
+			return true;
+		}
+		return false;
 	}
 	
 	// pegging play for computer
@@ -290,11 +322,13 @@ public class GameModel {
 	            points += scoreRun(playingRun);
 
 	            pegboard.addPoints(currentPlayer, points);
+				if (checkIfPlayerWon(currentPlayer, otherPlayer)) break;
 	            System.out.println(getPlayerName(currentPlayer) + " scores " + points + " point(s). Running total: " + runningTotal);
 
 	            if (runningTotal == 31 || bothPlayersCantPlay(player1, computerPlayer)) {
 	                if (runningTotal != 31) {
 	                    pegboard.addPoints(currentPlayer, 1);
+						if (checkIfPlayerWon(currentPlayer, otherPlayer)) break;
 	                    System.out.println(getPlayerName(currentPlayer) + " scores 1 point for last card.");
 	                }
 
@@ -306,6 +340,7 @@ public class GameModel {
 	        else {
 	            if (goCalled) {
 	                pegboard.addPoints(otherPlayer, 1);
+					if (checkIfPlayerWon(currentPlayer, otherPlayer)) break;
 	                System.out.println(getPlayerName(currentPlayer) + " says 'Go'. " + getPlayerName(otherPlayer) + " scores 1 point.");
 	                runningTotal = 0;
 	                playingRun.clear();
@@ -324,7 +359,8 @@ public class GameModel {
 
 	    if (runningTotal > 0 && runningTotal < 31) {
 	        pegboard.addPoints(currentPlayer, 1);
-	        System.out.println(getPlayerName(currentPlayer) + " scores 1 point for final card.");
+			if (checkIfPlayerWon(currentPlayer, otherPlayer));
+	        else System.out.println(getPlayerName(currentPlayer) + " scores 1 point for final card.");
 	    }
 	}
 	
@@ -368,6 +404,7 @@ public class GameModel {
 		// add the scores to the pegboard
 		pegboard.addPoints(playerOne, plrOnePts);
 		pegboard.addPoints(playerTwo, plrTwoPts);
+		checkIfPlayerWon(playerOne, playerTwo);
 		
 		System.out.println("Crib: " + getCrib());
 
@@ -376,11 +413,13 @@ public class GameModel {
 			int cribPts = crib.score(starter);
 			pegboard.addPoints(playerOne, cribPts);
 			System.out.println("Player 1 scores " + cribPts + " from the crib");
+			checkIfPlayerWon(playerOne, playerTwo);
 		}
 		else {
 			int cribPts = crib.score(starter);
 			pegboard.addPoints(playerTwo, cribPts);
 			System.out.println("Player 2 scores " + cribPts + " from the crib");
+			checkIfPlayerWon(playerOne, playerTwo);
 		}
 		
 	}
