@@ -11,6 +11,7 @@ import model.Strategy;
 import model.HardStrategy;
 
 public class View {
+	
 	public static void main(String args[]) {
 		Scanner systemIn = new Scanner(System.in);
 		
@@ -90,7 +91,7 @@ public class View {
 		    System.out.println("Choose first card to discard (enter as seen, e.g. 'QUEEN DIAMONDS'):");
 		    String discardOne = systemIn.nextLine().strip().toUpperCase();
 		   
-		    while (!game.getHand("Player 1").toString().toUpperCase().contains(discardOne)) {
+		    while (!game.getHand("Player 1").toUpperCase().contains(discardOne)) {
 		        System.out.println("Invalid card. Try again:");
 		        discardOne = systemIn.nextLine().strip().toUpperCase();
 		    }
@@ -148,7 +149,7 @@ public class View {
 			System.out.println("Player 1 hand: " + game.getHand("Player 1"));
 			System.out.println("Player 1 choose first card to discard (enter as seen, e.g. 'QUEEN DIAMONDS')");
 			String discardOne = systemIn.nextLine().strip().toUpperCase();
-			while (!game.getHand("Player 1").contains(discardOne)) {
+			while (!game.getHand("Player 1").contains(discardOne) && discardOne.length() > 8) {
 				System.out.println("Invalid card. Try again:");
 				discardOne = systemIn.nextLine().strip().toUpperCase();
 			}
@@ -157,7 +158,7 @@ public class View {
 	
 			System.out.println("Player 1 choose second card to discard (enter as seen, e.g. 'QUEEN DIAMONDS')");
 			String discardTwo = systemIn.nextLine().strip().toUpperCase();
-			while (!game.getHand("Player 1").contains(discardTwo)) {
+			while (!game.getHand("Player 1").contains(discardTwo) && discardOne.length() > 8) {
 				System.out.println("Invalid card. Try again:");
 				discardTwo = systemIn.nextLine().strip().toUpperCase();
 			}
@@ -168,7 +169,7 @@ public class View {
 			System.out.println("Player 2 hand: " + game.getHand("Player 2"));
 			System.out.println("Player 2 choose first card to discard (enter as seen, e.g. 'QUEEN DIAMONDS')");
 			discardOne = systemIn.nextLine().strip().toUpperCase();
-			while (!game.getHand("Player 2").contains(discardOne)) {
+			while (!game.getHand("Player 2").contains(discardOne) && discardOne.length() > 8) {
 				System.out.println("Invalid card. Try again:");
 				discardOne = systemIn.nextLine().strip().toUpperCase();
 			}
@@ -177,7 +178,7 @@ public class View {
 	
 			System.out.println("Player 2 choose second card to discard (enter as seen, e.g. 'QUEEN DIAMONDS')");
 			discardTwo = systemIn.nextLine().strip().toUpperCase();
-			while (!game.getHand("Player 2").contains(discardTwo)) {
+			while (!game.getHand("Player 2").contains(discardTwo) && discardOne.length() > 8) {
 				System.out.println("Invalid card. Try again:");
 				discardTwo = systemIn.nextLine().strip().toUpperCase();
 			}
