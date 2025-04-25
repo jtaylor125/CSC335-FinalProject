@@ -10,6 +10,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
+import rules.RuleEngine;
+
 public class GameModel {
 	private Player playerOne;
 	private Player playerTwo;
@@ -20,6 +22,9 @@ public class GameModel {
 	private CardStack playingRun;
 	private Pegboard pegboard;
 	private int runningTotal;
+	
+	private RuleEngine ruleEngine;
+	
 	
 	// Constructor
 	public GameModel() {
@@ -35,6 +40,8 @@ public class GameModel {
 		playingRun = null;
 		
 		pegboard = new Pegboard();
+		
+		ruleEngine = new RuleEngine();
 	}
 	
     /* This method determines the dealer by drawing a random card for each player.
@@ -167,13 +174,7 @@ public class GameModel {
 	            playingRun.push(play);
 	            runningTotal += play.getValue();
 
-	            int points = 0;
-	            if (runningTotal == 15 || runningTotal == 31) {
-	                points += 2;
-	            }
-
-	            points += scorePair(playingRun);
-	            points += scoreRun(playingRun);
+	            int points = ruleEngine.scorePegging(playingRun);
 
 	            pegboard.addPoints(currentPlayer, points);
 
@@ -323,17 +324,7 @@ public class GameModel {
 	            playingRun.push(play);
 	            runningTotal += play.getValue();
 
-	            int points = 0;
-	            if (runningTotal == 15) {
-	                points += 2;
-	            }
-
-	            if (runningTotal == 31) {
-	                points += 2;
-	            }
-
-	            points += scorePair(playingRun);
-	            points += scoreRun(playingRun);
+	            int points = ruleEngine.scorePegging(playingRun);
 
 	            pegboard.addPoints(currentPlayer, points);
 				if (checkIfPlayerWon(currentPlayer, otherPlayer)) break;
@@ -392,31 +383,7 @@ public class GameModel {
 	        return "Player 2";
 	    }
 	}
-	/* This method checks the last played cards in the stack for a pair, triple, or four-of-a-kind.
-	 * It returns a score based on how many of the most recent cards have the same rank.
-	 * Arguments:
-	 *      stack: a CardStack representing the current pegging play
-	 * Returns:
-	 *      an int representing the points earned from matched cards
-	 */
-	private int scorePair(CardStack stack) {
-	    List<Card> cards = new ArrayList<>();
-	    for (Card c : stack) {
-	        cards.add(c);
-	    }
 
-	    int count = 1;
-	    for (int i=cards.size()-2; i >= 0; i--) {
-	        if (cards.get(i).rank == cards.get(cards.size()-1).rank) {
-	            count++;
-	        }
-	        else break;
-	    }
-	    if (count == 2) return 2;
-	    else if (count == 3) return 6;
-	    else if (count == 4) return 12;
-	    return 0;
-	}
 
 	/* This method scores each player's hand using the starter card and also scores the crib
 	 * for the dealer. Scores are added to the pegboard and displayed to the user.
@@ -449,54 +416,7 @@ public class GameModel {
 		}
 		
 	}
-	/* This method checks for runs in the current pegging play and returns the score of
-	 * the longest run found from the end of the play stack.
-	 * Arguments:
-	 *      stack: a CardStack of cards currently played in the pegging phase
-	 * Returns:
-	 *      an int representing the score based on run length
-	 */
-	private int scoreRun(CardStack stack) {
-	    List<Card> cards = new ArrayList<>();
-	    for (Card c : stack) {
-	        cards.add(c);
-	    }
 
-	    int maxRun = 0;
-	    for (int len = 3; len <= cards.size(); len++) {
-	        List<Card> sub = cards.subList(cards.size() - len, cards.size());
-	        if (isRun(sub)) {
-	            maxRun = len;
-	        }
-	    }
-	    return maxRun;
-	}
-	/* This helper method checks if a given list of cards forms a valid run
-	 * by comparing ordinal values of card ranks in sorted order.
-	 * Arguments:
-	 *      cards: a List of cards to check
-	 * Returns:
-	 *      true if the cards form a consecutive run; false otherwise
-	 */
-	private boolean isRun(List<Card> cards) {
-	    if (cards.size() < 3) {
-	        return false;
-	    }
-
-	    List<Integer> values = new ArrayList<>();
-	    for (Card card : cards) {
-	        values.add(card.rank.ordinal());
-	    }
-
-	    Collections.sort(values);
-	    for (int i=1; i < values.size(); i++) {
-	        if (values.get(i) != values.get(i - 1) + 1) {
-	            return false;
-	        }
-	    }
-
-	    return true;
-	}
 	
 	/* This method checks whether both players have no playable cards remaining
 	 * given the current running total.
