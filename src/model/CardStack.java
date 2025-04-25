@@ -1,127 +1,80 @@
-package Tests;
+/* Authors: Andy Zhang, Nathan Crossman, Jacob, Talyor
+ * Course: CSC 335
+ * Description: An instance of this class represents a Card Stack, a CardStack is composed
+ * of any number of Card objects
+ */
+package model;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
-import org.junit.jupiter.api.Test;
+public class CardStack implements Iterable<Card> {
 
-import model.Card;
-import model.CardStack;
-import model.Rank;
-import model.Suit;
+	// instance variables
+	private final List<Card> cards = new ArrayList<Card>();
 
-public class CardStackTest {
-	
-	@Test
-	void testCardStack() {
-		CardStack stack = new CardStack(); 
-		assertEquals(stack.size(),0);
-		assertTrue(stack.isEmpty());
+	/* This method adds a Card to the top of the stack
+	 * Arguments:
+	 * 		c: the Card object to add
+	 * Preconditions:
+	 * 		c must not be null and must not already exist in the stack
+	 */
+	public void push(Card c) {
+		assert c != null && !cards.contains(c);
+		cards.add(c);
+	}
+
+	/* This method removes and returns the Card at the top of the stack
+	 * Returns:
+	 * 		the Card object that was removed
+	 * Preconditions:
+	 * 		the stack must not be empty
+	 */
+	public Card pop() {
+		assert !isEmpty();
+		return cards.remove(cards.size() - 1);
+	}
+
+	/* This method returns the Card at the top of the stack without removing it
+	 * Returns:
+	 * 		the Card object at the top of the stack
+	 * Preconditions:
+	 * 		the stack must not be empty
+	 */
+	public Card peek() {
+		assert !isEmpty();
+		return cards.get(cards.size() - 1);
+	}
+
+	/* This method removes all Cards from the stack
+	 */
+	public void clear() {
+		cards.clear();
+	}
+
+	/* This method checks if the stack is empty
+	 * Returns:
+	 * 		true if the stack has no cards, false otherwise
+	 */
+	public boolean isEmpty() {
+		return cards.size() == 0;
+	}
+
+	/* This method returns the number of Cards currently in the stack
+	 * Returns:
+	 * 		an int representing the number of cards in the stack
+	 */
+	public int size() {
+		return cards.size();
+	}
+
+	/* This method returns an iterator for the stack
+	 * Returns:
+	 * 		an Iterator<Card> over the cards in the stack
+	 */
+	public Iterator<Card> iterator() {
+		return cards.iterator();
 	}
 	
-	@Test
-	void testPushPeek() {
-		CardStack stack = new CardStack();
-		Card c1 = Card.get(Rank.FOUR, Suit.SPADES);
-		stack.push(c1);
-		assertEquals(stack.peek(),c1);
-		assertFalse(stack.isEmpty());
-		assertEquals(stack.size(),1);
-	}
-	
-	@Test
-	void testPop() {
-		CardStack stack = new CardStack();
-		Card c1 = Card.get(Rank.FOUR, Suit.SPADES);
-		stack.push(c1);
-		assertEquals(stack.peek(),c1);
-		assertFalse(stack.isEmpty());
-		assertEquals(stack.size(),1);
-		
-		Card c2 = stack.pop();
-		assertEquals(c2,c1);
-		assertTrue(stack.isEmpty());
-		assertEquals(stack.size(),0);
-	}
-	
-	@Test
-	void testMultipleCards() {
-		CardStack stack = new CardStack();
-		Card c1 = Card.get(Rank.FOUR, Suit.SPADES);
-		Card c2 = Card.get(Rank.JACK, Suit.HEARTS);
-		Card c3 = Card.get(Rank.TEN, Suit.CLUBS);
-		Card c4 = Card.get(Rank.THREE, Suit.DIAMONDS);
-		stack.push(c1);
-		stack.push(c2);
-		stack.push(c3);
-		stack.push(c4);
-		
-		assertEquals(stack.peek(),c4);
-		assertFalse(stack.isEmpty());
-		assertEquals(stack.size(),4);
-		
-		assertEquals(c4,stack.pop());
-		
-		assertEquals(stack.peek(),c3);
-		assertFalse(stack.isEmpty());
-		assertEquals(stack.size(),3);
-		
-		Card c5 = Card.get(Rank.QUEEN, Suit.SPADES);
-		stack.push(c5);
-		assertEquals(stack.peek(),c5);
-		assertFalse(stack.isEmpty());
-		assertEquals(stack.size(),4);
-	}
-	
-	@Test
-	void testClear() {
-		CardStack stack = new CardStack();
-		Card c1 = Card.get(Rank.FOUR, Suit.SPADES);
-		Card c2 = Card.get(Rank.JACK, Suit.HEARTS);
-		Card c3 = Card.get(Rank.TEN, Suit.CLUBS);
-		Card c4 = Card.get(Rank.THREE, Suit.DIAMONDS);
-		stack.push(c1);
-		stack.push(c2);
-		stack.push(c3);
-		stack.push(c4);
-		
-		Card c5 = Card.get(Rank.QUEEN, Suit.SPADES);
-		stack.push(c5);
-		
-		assertFalse(stack.isEmpty());
-		assertEquals(stack.size(),5);
-		
-		stack.clear();
-		
-		assertTrue(stack.isEmpty());
-		assertEquals(stack.size(),0);
-	}
-	
-	@Test
-	void testIterator() {
-		CardStack stack = new CardStack();
-		Card c1 = Card.get(Rank.FOUR, Suit.SPADES);
-		Card c2 = Card.get(Rank.JACK, Suit.HEARTS);
-		Card c3 = Card.get(Rank.TEN, Suit.CLUBS);
-		Card c4 = Card.get(Rank.THREE, Suit.DIAMONDS);
-		stack.push(c1);
-		stack.push(c2);
-		stack.push(c3);
-		stack.push(c4);
-		
-		Iterator<Card> iter = stack.iterator();
-		
-		CardStack stackTwo = new CardStack();
-		
-		while (iter.hasNext()) {
-			Card c = iter.next();
-			stackTwo.push(c);
-		}
-		
-		assertEquals(c4,stackTwo.pop());
-		assertEquals(c3,stackTwo.pop());
-		assertEquals(c2,stackTwo.pop());
-		assertEquals(c1,stackTwo.pop());
-	}
-}
+} // end class
