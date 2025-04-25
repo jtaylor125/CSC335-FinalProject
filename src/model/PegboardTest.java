@@ -1,9 +1,12 @@
-package model;
+package Tests;
 import static org.junit.jupiter.api.Assertions.*;
 
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import model.Pegboard;
+import model.Player;
 public class PegboardTest {
     private static Pegboard board;
     private static Player player;
