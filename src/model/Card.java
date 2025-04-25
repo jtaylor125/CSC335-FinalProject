@@ -12,7 +12,7 @@ public class Card {
 	private Card(Rank r, Suit s){
 		this.rank = r;
 		this.suit = s;
-
+		
 	}
 
 	static {
@@ -31,12 +31,12 @@ public class Card {
 	}
 	
 	public static Card get(String rank, String suit) {
-		String temp = rank + " OF " + suit;
+		String temp = rank.toUpperCase() + " OF " + suit.toUpperCase();
 		return CARDS.get(temp);
 	}
 	
 	public int getValue() {
-		if (rank.ordinal() >= Rank.JACK.ordinal()) {
+		if (rank.ordinal() >= Rank.TEN.ordinal()) {
 			return 10;
 		}
 		return rank.ordinal() + 1;

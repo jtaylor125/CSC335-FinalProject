@@ -1,82 +1,81 @@
 package model;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.HashMap;
-import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 public class PegboardTest {
-	@Test
-	void testPegboard() {
-		Pegboard p = new Pegboard();
-	}
-	
-	@Test
-	void addPlayer() {
-		Pegboard peg = new Pegboard();
-		
-		Player p = new Player();
-		
-		peg.addPlayer(p);
-		
-		assertEquals(0,peg.getScore(p));
-	}
-	
-	@Test
-	void addScores() {
-		Pegboard peg = new Pegboard();
-		
-		Player p1 = new Player();
-		Player p2 = new Player();
-		
-		peg.addPlayer(p1);
-		peg.addPlayer(p2);
-		
-		peg.addPoints(p1, 12);
-		
-		assertEquals(12,peg.getScore(p1));
-		assertEquals(0,peg.getScore(p2));
-	}
-	
-	@Test
-	void testHasWon() {
-		Pegboard peg = new Pegboard();
-		
-		Player p1 = new Player();
-		Player p2 = new Player();
-		Player p3 = new Player();
-		
-		peg.addPlayer(p1);
-		peg.addPlayer(p2);
-		peg.addPlayer(p3);
-		
-		peg.addPoints(p1, 121);
-		peg.addPoints(p2, 122);
-		
-		assertTrue(peg.hasWon(p1));
-		assertTrue(peg.hasWon(p2));
-		assertFalse(peg.hasWon(p3));
-	}
-	
-	@Test
-	void testAllScores() {
-		Pegboard peg = new Pegboard();
-		
-		Player p1 = new Player();
-		Player p2 = new Player();
-		Player p3 = new Player();
-		
-		peg.addPlayer(p1);
-		peg.addPlayer(p2);
-		peg.addPlayer(p3);
-		
-		peg.addPoints(p1, 89);
-		peg.addPoints(p2, 12);
-		
-		HashMap<Player, Integer> scores = peg.getAllScores();
-		
-		assertEquals(89,scores.get(p1));
-		assertEquals(12,scores.get(p2));
-		assertEquals(0,scores.get(p3));
-	}
+    private static Pegboard board;
+    private static Player player;
+    
+    @BeforeEach
+    public void setUp() {
+        board = new Pegboard();
+        player = new Player();
+    }
+
+    @Test
+    public void testAddPoints() {
+        board.addPoints(player, 20);
+        assertEquals(20, board.getScore(player));
+    }
+
+    @Test
+    public void testGetFrontPeg() {
+        board.addPoints(player, 10);
+        int front = board.getFrontPeg(player);
+        assertEquals(10, front);
+    }
+
+    @Test
+    public void testGetBackPeg() {
+        board.addPoints(player, 5);
+        board.addPoints(player, 7);
+        int back = board.getBackPeg(player);
+        assertEquals(5, back);
+    }
+
+    @Test
+    public void testHasWon() {
+        board.addPoints(player, 121);
+        assertTrue(board.hasWon(player));
+    }
+
+    @Test
+    public void testResetScores() {
+        board.addPoints(player, 80);
+        board.resetScores();
+        assertEquals(0, board.getScore(player));
+    }
+
+    @Test
+    public void testGetScore() {
+        board.addPoints(player, 33);
+        int score = board.getScore(player);
+        assertEquals(33, score);
+    }
+    
+    @Test
+    public void testScoring() {
+        board.addPoints(player, 2);
+        int firstScore = board.getScore(player);
+        assertEquals(2, firstScore);
+
+        board.addPoints(player, 3);
+        int secondScore = board.getScore(player);
+        assertEquals(5, secondScore);
+
+        // check front and back peg positions
+        int frontPeg = board.getFrontPeg(player);
+        int backPeg = board.getBackPeg(player);
+        assertEquals(5, frontPeg);
+        assertEquals(2, backPeg);
+    }
+    @Test
+    public void testToString() {
+        board.addPoints(player, 2);
+        board.addPoints(player, 3);
+        assertEquals(board.toString(), "Current Pegboard:\n"
+        		+ "Player Pegs: Peg 1: 2, Peg 2: 5\n");
+    }
 }

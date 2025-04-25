@@ -22,11 +22,11 @@ public class Hand {
 	public void removeCard(Card card) {
 		this.hand.remove(card);
 	}
-
+	
 	public boolean isEmpty() {
 		return hand.isEmpty();
 	}
-	public List<Card> gethand() {
+	public List<Card> getHand() {
 		// return a copy of the hand, avoidance of problematic escaping references
 		return new ArrayList<>(hand);
 	}
@@ -167,5 +167,17 @@ public class Hand {
 			}
 		}
 		return 0;
+	}
+	
+	
+	
+	public List<Card> getPlayableCards(int currentTotal) {
+	    List<Card> playable = new ArrayList<>();
+	    for (Card card : hand) {
+	        if (card.getValue() + currentTotal <= 31) {
+	            playable.add(card);
+	        }
+	    }
+	    return playable;
 	}
 }
