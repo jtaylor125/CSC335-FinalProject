@@ -1,10 +1,14 @@
-package model;
+package Tests;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+
+import model.Card;
+import model.EasyStrategy;
+import model.Hand;
 
 public class EasyStrategyTest {
 	@Test

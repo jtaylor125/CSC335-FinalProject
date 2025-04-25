@@ -1,3 +1,8 @@
+/* Authors: Andy Zhang, Nathan Crossman, Jacob, Talyor
+ * Course: CSC 335
+ * Description: This class represents a computer, it plays against a human opponent
+ * and determines what cards it plays based on the Strategy it uses
+ */
 package model;
 
 import java.util.List;

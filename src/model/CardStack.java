@@ -1,3 +1,8 @@
+/* Authors: Andy Zhang, Nathan Crossman, Jacob, Talyor
+ * Course: CSC 335
+ * Description: An instance of this class represents a Card Stack, a CardStack is composed
+ * of any number of Card objects
+ */
 package model;
 
 import java.util.ArrayList;
