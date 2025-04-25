@@ -220,7 +220,13 @@ public class GameModel {
 	    }
 	}
 
-	// check if a player has won
+	/* This method checks if one of the players have reached the end of pegboard, and resets the pegboard.
+	 * Arguments:
+	 * 		player 1: an arbitrary Player object
+	 * 		player 2: an arbitrary Player object
+	 * Returns :
+	 * 		true if a player has won, false if no player has won
+	 */
 	private boolean checkIfPlayerWon(Player player1, Player player2) {
 		if (pegboard.hasWon(player1)) {
 			if (getPlayerName(player1).equals("Player 1")) {
@@ -481,7 +487,10 @@ public class GameModel {
 		return null;
 	}
 	
-	// getters
+	/* This method returns a string representation of a Player object if they are the dealer
+	 * Returns: 
+	 * 		a String of either Player 1 or Player 2
+	 */
 	public String getDealer() {
 		if (playerOne.isDealer()) {
 			return "Player 1";
@@ -490,7 +499,13 @@ public class GameModel {
 			return "Player 2";
 		}
 	}
-	// gets the hand of a player
+
+	/* This method returns a string representation of a player's hand based on the String argument
+	 * Argument:
+	 * 		player : a String object (either player 1 or player 2)
+	 * Returns:
+	 * 		a String of a player's hand
+	 */
 	public String getHand(String player) {
 		String hand = "";
 		if (player.toLowerCase().equals("player 1")) {
@@ -505,7 +520,11 @@ public class GameModel {
 		}
 		return hand.substring(0,hand.length()-2);
 	}
-	// gets the current crib
+
+	/* This method returns a string representation of the crib hand
+	 * Returns:
+	 * 		a String of the crib object
+	 */
 	public String getCrib() {
 		String cribString = "";
 		for (Card c : crib.getHand()) {
@@ -513,7 +532,13 @@ public class GameModel {
 		}
 		return cribString.substring(0, cribString.length()-2);
 	}
-	// gets the score of a player using the front peg
+	
+	/* This method gets the score of a player using the front peg in the pegboard
+	 * Argument:
+	 * 		playerName: a String object that is either player 1 or player 2
+	 * Returns:
+	 * 		the int score of a player using the front peg of pegboard
+	 */
 	public int getScore(String playerName) {
 	    if (playerName.toLowerCase().equals("player 1")) {
 	        return pegboard.getScore(playerOne);
@@ -522,10 +547,19 @@ public class GameModel {
 	        return pegboard.getScore(playerTwo);
 	    }
 	}
+
+	/* This method returns a string representation of the pegboard object
+	 * Returns:
+	 * 		a String of pegboard using the toString method
+	 */
 	public String getPegboard() {
 		return pegboard.toString();
 	}
 	
+	/* This method returns playerTwo
+	 * Returns:
+	 * 		the playerTwo Player object
+	 */
 	public Player getPlayerTwo() {
 		return playerTwo;
 		
