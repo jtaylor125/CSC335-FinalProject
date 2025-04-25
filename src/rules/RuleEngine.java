@@ -1,6 +1,5 @@
 package rules;
 
-import model.Card;
 import model.CardStack;
 
 import java.util.*;
@@ -15,6 +14,7 @@ public class RuleEngine {
     private void loadRules() {
         registerRule(new PairRule());
         registerRule(new FifteenRule());
+        registerRule(new ThirtyOneRule());
         registerRule(new RunRule());
     }
 
