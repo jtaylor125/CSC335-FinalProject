@@ -1,8 +1,15 @@
+/*
+ * File:	HandNobsRule.java
+ * Author:	Tristan Emma
+ * AI Help:	ChatGPT
+ * Purpose: This is the "Nobs" rule in Cribbage when scoring a hand
+ */
 package rules;
 
 import model.Card;
 import model.Rank;
 
+@ScoringRule(type = RuleType.HAND)
 public class HandNobsRule implements Rule {
 
 	@Override

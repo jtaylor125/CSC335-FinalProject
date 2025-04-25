@@ -1,3 +1,9 @@
+/*
+ * File:	RunRule.java
+ * Author:	Tristan Emma
+ * AI Help:	ChatGPT
+ * Purpose: This is the "Run" rule in Cribbage when scoring during pegging play
+ */
 package rules;
 
 import model.Card;

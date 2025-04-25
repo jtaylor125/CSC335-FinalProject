@@ -1,3 +1,9 @@
+/*
+ * File:	HandFlushRule.java
+ * Author:	Tristan Emma
+ * AI Help:	ChatGPT
+ * Purpose: This is the "Flush" rule in Cribbage when scoring a hand
+ */
 package rules;
 
 import java.util.HashMap;
@@ -5,6 +11,7 @@ import java.util.HashMap;
 import model.Card;
 import model.Suit;
 
+@ScoringRule(type = RuleType.HAND)
 public class HandFlushRule implements Rule {
 
 	@Override

@@ -64,8 +64,8 @@ public class Hand {
 		return hand.size();
 	}
 
-	/* This method scores a hand and the starter card from the argument passed by calling private
-	 * methods for various ways of scoring a hand
+	/* This method scores a hand and the starter card from the argument passed by 
+	 * calling the scoringEngine which independently define the rules for scoring
 	 * Arguments:
 	 * 		starter: a Card object
 	 * Returns:

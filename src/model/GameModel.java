@@ -6,11 +6,10 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
-import rules.RuleEngine;
+import rules.PeggingScoringEngine;
 
 public class GameModel {
 	private Player playerOne;
@@ -23,7 +22,7 @@ public class GameModel {
 	private Pegboard pegboard;
 	private int runningTotal;
 	
-	private RuleEngine ruleEngine;
+	private PeggingScoringEngine ruleEngine;
 	
 	
 	// Constructor
@@ -41,7 +40,7 @@ public class GameModel {
 		
 		pegboard = new Pegboard();
 		
-		ruleEngine = new RuleEngine();
+		ruleEngine = new PeggingScoringEngine();
 	}
 	
     /* This method determines the dealer by drawing a random card for each player.

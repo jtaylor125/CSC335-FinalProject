@@ -1,3 +1,9 @@
+/*
+ * File:	HandPairRule.java
+ * Author:	Tristan Emma
+ * AI Help:	ChatGPT
+ * Purpose: This is the "Pair" (multiples) rule in Cribbage when scoring a hand
+ */
 package rules;
 
 import model.Card;
