@@ -1,3 +1,8 @@
+/* Authors: Andy Zhang, Nathan Crossman, Jacob, Talyor
+ * Course: CSC 335
+ * Description: An instance of this class represents a standard Deck of
+ * 52 Cards. It is composed of 52 or less Card objects at any given moment
+ */
 package model;
 
 import java.util.ArrayList;
@@ -87,7 +92,7 @@ public class Deck {
      * Returns:
      *      an int representing the current size of the deck
      */
-    int size() {
+    public int size() {
         return deck.size();
     }
 
