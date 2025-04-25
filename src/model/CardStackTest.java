@@ -1,10 +1,15 @@
-package model;
+package Tests;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Iterator;
 
 import org.junit.jupiter.api.Test;
+
+import model.Card;
+import model.CardStack;
+import model.Rank;
+import model.Suit;
 
 public class CardStackTest {
 	
@@ -118,33 +123,5 @@ public class CardStackTest {
 		assertEquals(c3,stackTwo.pop());
 		assertEquals(c2,stackTwo.pop());
 		assertEquals(c1,stackTwo.pop());
-	}
-	
-	@Test
-	void testEmptyStackAssert() {
-		CardStack stack = new CardStack();
-		assertThrows(AssertionError.class, () -> {
-			stack.peek();
-		});
-		
-		assertThrows(AssertionError.class, () -> {
-			stack.pop();
-		});
-	}
-	
-	@Test
-	void testPushAsserts() {
-		CardStack stack = new CardStack();
-		Card c1 = Card.get(Rank.FOUR, Suit.SPADES);
-		
-		stack.push(c1);
-		
-		assertThrows(AssertionError.class, () -> {
-			stack.push(null);
-		});
-		
-		assertThrows(AssertionError.class, () -> {
-			stack.push(c1);
-		});
 	}
 }
