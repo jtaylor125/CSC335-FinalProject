@@ -1,3 +1,8 @@
+/* Authors: Andy Zhang, Nathan Crossman, Jacob, Talyor
+ * Course: CSC 335
+ * Description: This class is a Strategy that a computer can use, it selects
+ * cards at random. Implements the Strategy Design pattern.
+ */
 package model;
 
 import java.util.ArrayList;
