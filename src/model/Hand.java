@@ -44,7 +44,13 @@ public class Hand {
 		return hand.size();
 	}
 
-	// score the hand + starter card
+	/* This method scores a hand and the starter card from the argument passed by 
+	 * calling the scoringEngine which independently define the rules for scoring
+	 * Arguments:
+	 * 		starter: a Card object
+	 * Returns:
+	 * 		an int score
+	 */
 	public int score(Card starter) {
 		List<Card> fullHand = new ArrayList<>(hand);
 		fullHand.add(starter);

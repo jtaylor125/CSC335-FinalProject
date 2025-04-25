@@ -1,7 +1,12 @@
+/*
+ * File:	PairRule.java
+ * Author:	Tristan Emma
+ * AI Help:	ChatGPT
+ * Purpose: This is the "Pair" (multiples) rule in Cribbage when scoring during pegging play
+ */
 package rules;
 
 import model.Card;
-import model.CardStack;
 
 import java.util.ArrayList;
 import java.util.List;
