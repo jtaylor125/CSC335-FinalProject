@@ -1,7 +1,11 @@
-package model;
+package Tests;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
+
+import model.Card;
+import model.Rank;
+import model.Suit;
 
 public class CardTest {
 	@Test
