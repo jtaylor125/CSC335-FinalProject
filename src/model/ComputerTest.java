@@ -1,68 +1,63 @@
-package model;
+package Tests;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import model.Card;
+import model.Computer;
+import model.HardStrategy;
+import model.Player;
+import model.Strategy;
+
 public class ComputerTest {
-	@Test
-	void testComputer() {
-		Player p = new Player();
-		EasyStrategy easy = new EasyStrategy();
-		Computer c = new Computer(p,easy);
-		
-		assertEquals(c.getPlayer(),p);
-	}
-	
-	@Test
-	void testDiscarded() {
-		Player p = new Player();
-		EasyStrategy easy = new EasyStrategy();
-		Computer c = new Computer(p,easy);
-		
-		Card c1 = Card.get("ACE", "SPADES");
-		Card c2 = Card.get("TWO", "HEARTS");
-		Card c3 = Card.get("THREE", "DIAMONDS");
-		Card c4 = Card.get("FOUR", "CLUBS");
-		Card c5 = Card.get("FIVE", "SPADES");
-		Card c6 = Card.get("SIX", "SPADES");
-		
-		p.addToHand(c1);
-		p.addToHand(c2);
-		p.addToHand(c3);
-		p.addToHand(c4);
-		p.addToHand(c5);
-		p.addToHand(c6);
 
-		
-		List<Card> discards = c.chooseDiscarded();
-		assertTrue(p.getHand().getHand().contains(discards.get(0)));
-		assertTrue(p.getHand().getHand().contains(discards.get(1)));
-	}
-	
-	@Test
-	void testPeg() {
-		Player p = new Player();
-		EasyStrategy easy = new EasyStrategy();
-		Computer c = new Computer(p,easy);
-		
-		
-		Card c1 = Card.get("ACE", "SPADES");
-		Card c2 = Card.get("TWO", "HEARTS");
-		Card c3 = Card.get("THREE", "DIAMONDS");
-		Card c4 = Card.get("FOUR", "CLUBS");
 
-		
-		p.addToHand(c1);
-		p.addToHand(c2);
-		p.addToHand(c3);
-		p.addToHand(c4);
-		
-		Hand hand2 = new Hand();
-		
-		Card played = c.choosePlay(0,hand2.getHand());
-		assertTrue(p.getHand().getHand().contains(played));
-	}
+    private Player player;
+    private Strategy strategy;
+    private Computer computer;
+
+    @BeforeEach
+    void setUp() {
+        player = new Player();
+        strategy = new HardStrategy();
+        computer = new Computer(player, strategy);
+    }
+
+    @Test
+    void testGetPlayer() {
+        assertEquals(player, computer.getPlayer(), "Computer should return the correct Player object");
+    }
+
+    @Test
+    void testChooseDiscarded() {
+        player.addToHand(Card.get("TWO", "HEARTS"));
+        player.addToHand(Card.get("FIVE", "SPADES"));
+        player.addToHand(Card.get("KING", "CLUBS"));
+        player.addToHand(Card.get("JACK", "DIAMONDS"));
+        player.addToHand(Card.get("NINE", "HEARTS"));
+        player.addToHand(Card.get("ACE", "SPADES"));
+        List<Card> discards = computer.chooseDiscarded();
+        assertEquals(2, discards.size());
+        assertTrue(
+            (discards.contains(Card.get("KING", "CLUBS")) && discards.contains(Card.get("JACK", "DIAMONDS"))) ||
+            (discards.contains(Card.get("JACK", "DIAMONDS")) && discards.contains(Card.get("KING", "CLUBS"))));
+    }
+
+    @Test
+    void testChoosePlay() {
+        player.addToHand(Card.get("TWO", "HEARTS"));
+        player.addToHand(Card.get("FIVE", "SPADES"));
+        player.addToHand(Card.get("KING", "CLUBS"));
+
+        List<Card> playedCards = new ArrayList<>();
+        int runningTotal = 20;
+        Card selectedCard = computer.choosePlay(runningTotal, playedCards);
+        assertNotNull(selectedCard);
+        assertTrue(selectedCard.getValue() + runningTotal <= 31);
+    }
 }
