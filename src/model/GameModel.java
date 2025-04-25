@@ -37,8 +37,10 @@ public class GameModel {
 		pegboard = new Pegboard();
 	}
 	
-	// Draw two random cards from the deck, one for each player. The player with the 
-	// lower card becomes the first dealer. Dealer gets the crib.
+    /* This method determines the dealer by drawing a random card for each player.
+     * The player with the lower card becomes the dealer. The drawn cards are discarded,
+     * and the deck is reset and shuffled for play.
+     */
 	public void determineDealer() {
 		// draw random cards from deck and add to players hands
 		Card card1 = deck.drawRandom();
@@ -68,8 +70,9 @@ public class GameModel {
 		deck.shuffle();
 	}
 	
-	// Each player is dealt 6 cards to their hand. They discard two, which makes up the
-	// crib.
+    /* This method deals six cards to each player based on who is the dealer.
+     * The non-dealer receives cards first, followed by the dealer.
+     */
 	public void deal() {
 		// deal the first hand to player 1 if player 2 is dealer
 		if (playerTwo.isDealer()) {
@@ -85,10 +88,12 @@ public class GameModel {
 				playerOne.addToHand(deck.drawTop());
 			}
 		}
-		// discards should probably be handled somewhere else as players need to see their cards
-		// before choosing which one to discard
 	}
-	
+    /* This method removes a specified card from a player's hand and adds it to the crib.
+     * Arguments:
+     *      player: a String indicating the player ("Player 1" or "Player 2")
+     *      discard: a String representing the card to discard (e.g., "QUEEN HEARTS")
+     */
 	public void discard(String player, String discard) {
 		String rank = discard.substring(0, discard.indexOf(" "));
 		String suit = discard.substring(discard.indexOf(" ")+1);
@@ -104,9 +109,11 @@ public class GameModel {
 		}
 	}
 	
-	// Flip the starter card, the top card on the deck. Players play cards on the 
-	// playingRun and can score points for various things. One important aspect of this
-	// is the count.
+    /* This method executes pegging play between two human players.
+     * It handles alternating turns, card selection, point scoring, and turn logic.
+     * Arguments:
+     *      input: a Scanner used to receive player input
+     */
 	public void peggingPlay(Scanner input) {
 	    starter = deck.drawTop();
 	    playingRun = new CardStack();
@@ -206,7 +213,13 @@ public class GameModel {
 	    }
 	}
 	
-	// pegging play for computer
+	/* This method executes pegging play for a one-player game human vs computer.
+	 * It alternates turns between the human and computer player, evaluates playable cards,
+	 * calculates scores for runs, pairs, and special totals like 15 and 31, and manages "go" calls.
+	 * Arguments:
+	 *      input: a Scanner object for user input
+	 *      computer: a Computer object representing the AI opponent
+	 */
 	public void onePlayerPeggingPlay(Scanner input, Computer computer) {
 	    starter = deck.drawTop();
 	    playingRun = new CardStack();
@@ -256,7 +269,8 @@ public class GameModel {
 	                        else {
 	                            System.out.println("Index out of range. Try again.");
 	                        }
-	                    } catch (NumberFormatException e) {
+	                    }
+	                    catch (NumberFormatException e) {
 	                        System.out.println("Invalid input. Please enter a number.");
 	                    }
 	                }
@@ -328,6 +342,12 @@ public class GameModel {
 	    }
 	}
 	
+    /* This method returns a player name string based on which player object is passed in
+     * Arguments:
+     *      player: a Player object
+     * Returns:
+     *      a String representing the player ("Player 1" or "Player 2")
+     */
 	private String getPlayerName(Player player) {
 	    if (player == playerOne) {
 	        return "Player 1";
@@ -336,7 +356,13 @@ public class GameModel {
 	        return "Player 2";
 	    }
 	}
-	// scores pairs of the current CardStack
+	/* This method checks the last played cards in the stack for a pair, triple, or four-of-a-kind.
+	 * It returns a score based on how many of the most recent cards have the same rank.
+	 * Arguments:
+	 *      stack: a CardStack representing the current pegging play
+	 * Returns:
+	 *      an int representing the points earned from matched cards
+	 */
 	private int scorePair(CardStack stack) {
 	    List<Card> cards = new ArrayList<>();
 	    for (Card c : stack) {
@@ -356,9 +382,9 @@ public class GameModel {
 	    return 0;
 	}
 
-	// TO DO - complete regularPlay functionality
-	// Each player scores their hand with the starter card, and the dealer scores
-	// their crib as well. 
+	/* This method scores each player's hand using the starter card and also scores the crib
+	 * for the dealer. Scores are added to the pegboard and displayed to the user.
+	 */
 	public void regularPlay() {
 		int plrOnePts = playerOne.scoreHand(starter);
 		System.out.println("Player 1 scores " + plrOnePts);
@@ -384,7 +410,13 @@ public class GameModel {
 		}
 		
 	}
-	// Checks for a runs in the current pegging play, and only scores the longest one
+	/* This method checks for runs in the current pegging play and returns the score of
+	 * the longest run found from the end of the play stack.
+	 * Arguments:
+	 *      stack: a CardStack of cards currently played in the pegging phase
+	 * Returns:
+	 *      an int representing the score based on run length
+	 */
 	private int scoreRun(CardStack stack) {
 	    List<Card> cards = new ArrayList<>();
 	    for (Card c : stack) {
@@ -400,7 +432,13 @@ public class GameModel {
 	    }
 	    return maxRun;
 	}
-	// helper method for scoreRun
+	/* This helper method checks if a given list of cards forms a valid run
+	 * by comparing ordinal values of card ranks in sorted order.
+	 * Arguments:
+	 *      cards: a List of cards to check
+	 * Returns:
+	 *      true if the cards form a consecutive run; false otherwise
+	 */
 	private boolean isRun(List<Card> cards) {
 	    if (cards.size() < 3) {
 	        return false;
@@ -421,7 +459,14 @@ public class GameModel {
 	    return true;
 	}
 	
-	// checks if both players can no longer play
+	/* This method checks whether both players have no playable cards remaining
+	 * given the current running total.
+	 * Arguments:
+	 *      p1: Player 1
+	 *      p2: Player 2
+	 * Returns:
+	 *      true if both players cannot play; false otherwise
+	 */
 	private boolean bothPlayersCantPlay(Player p1, Player p2) {
 	    List<Card> playerOnePlayable = p1.getHand().getPlayableCards(runningTotal);
 	    List<Card> playerTwoPlayable = p2.getHand().getPlayableCards(runningTotal);
@@ -429,11 +474,10 @@ public class GameModel {
 	    return playerOnePlayable.isEmpty() && playerTwoPlayable.isEmpty();
 	}
 	
-	
-	
-	// TO DO - complete reset functionality
-	// reset the deck, shuffle, and switch dealers
-	// completed
+	/* This method resets the state of the game for a new round. It clears both players' hands,
+	 * the crib, the starter, the running total, and the playing stack. It rebuilds and shuffles
+	 * the deck and switches the dealer.
+	 */
 	public void reset() {
 		playerOne.getHand().clear();
 		playerTwo.getHand().clear();
@@ -445,7 +489,11 @@ public class GameModel {
 		deck.shuffle();
 		switchDealers();
 	}
-	// completed
+
+
+	/* This method switches the dealer role between player one and player two.
+	 * It sets the previous dealer to false and the other player to true.
+	 */
 	private void switchDealers() {
 		// switch dealers
 		if (playerOne.isDealer()) {
@@ -456,6 +504,17 @@ public class GameModel {
 			playerOne.setDealer(true);
 			playerTwo.setDealer(false);
 		}
+	}
+	/* This method checks whether either player has reached the winning score threshold.
+	 * It uses the Pegboard's hasWon method to determine if a player has won the game.
+	 * Returns:
+	 *      a String declaring the winner ("Player 1 wins!" or "Player 2 wins!")
+	 *      or null if no player has won yet
+	 */
+	public String checkWin() {
+		if (pegboard.hasWon(playerOne)) return "Player 1 wins!";
+		else if (pegboard.hasWon(playerTwo)) return "Player 2 wins!";
+		return null;
 	}
 	
 	// getters
@@ -501,13 +560,6 @@ public class GameModel {
 	}
 	public String getPegboard() {
 		return pegboard.toString();
-	}
-	
-	public String checkWin() {
-		if (pegboard.hasWon(playerOne)) return "Player 1 wins!";
-		else if (pegboard.hasWon(playerTwo)) return "Player 2 wins!";
-		return null;
-		
 	}
 	
 	public Player getPlayerTwo() {
