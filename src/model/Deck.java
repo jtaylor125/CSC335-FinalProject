@@ -1,4 +1,4 @@
-/* Authors: Andy Zhang, Nathan Crossman, Jacob, Talyor
+/* Authors: Andy Zhang, Nathan Crossman, Jacob Taylor, Tristan Emma
  * Course: CSC 335
  * Description: An instance of this class represents a standard Deck of
  * 52 Cards. It is composed of 52 or less Card objects at any given moment

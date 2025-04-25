@@ -1,4 +1,4 @@
-/* Authors: Andy Zhang, Nathan Crossman, Jacob, Talyor
+/* Authors: Andy Zhang, Nathan Crossman, Jacob Taylor, Tristan Emma
  * Course: CSC 335
  * Description: This class is a Strategy that a computer can use, it selects
  * cards at random. Implements the Strategy Design pattern.

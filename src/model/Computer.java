@@ -1,4 +1,4 @@
-/* Authors: Andy Zhang, Nathan Crossman, Jacob, Talyor
+/* Authors: Andy Zhang, Nathan Crossman, Jacob Taylor, Tristan Emma
  * Course: CSC 335
  * Description: This class represents a computer, it plays against a human opponent
  * and determines what cards it plays based on the Strategy it uses

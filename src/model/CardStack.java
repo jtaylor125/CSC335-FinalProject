@@ -1,4 +1,4 @@
-/* Authors: Andy Zhang, Nathan Crossman, Jacob, Talyor
+/* Authors: Andy Zhang, Nathan Crossman, Jacob Taylor, Tristan Emma
  * Course: CSC 335
  * Description: An instance of this class represents a Card Stack, a CardStack is composed
  * of any number of Card objects
