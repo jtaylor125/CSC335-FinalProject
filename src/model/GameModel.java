@@ -212,15 +212,18 @@ public class GameModel {
 	    }
 	}
 
+	// check if a player has won
 	private boolean checkIfPlayerWon(Player player1, Player player2) {
 		if (pegboard.hasWon(player1)) {
 			if (getPlayerName(player1).equals("Player 1")) {
 				playerOne.playerWon();
 				System.out.println(getPlayerName(player1) + " has won!");
+				pegboard.resetScores();
 			}
 			else {
 				playerTwo.playerWon();
 				System.out.println(getPlayerName(player2) + " has won!");
+				pegboard.resetScores();
 			}
 			return true;
 		}
@@ -228,10 +231,12 @@ public class GameModel {
 			if (getPlayerName(player2).equals("Player 1")) {
 				playerOne.playerWon();
 				System.out.println(getPlayerName(player1) + " has won!");
+				reset();
 			}
 			else {
 				playerTwo.playerWon();
 				System.out.println(getPlayerName(player2) + " has won!");
+				reset();
 			}
 			return true;
 		}
