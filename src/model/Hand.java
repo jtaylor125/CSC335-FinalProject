@@ -7,7 +7,7 @@ import java.util.List;
 public class Hand {
 	private final List<Card> hand;
 	
-	//TO DO
+	// contructor
 	public Hand() {
 		//Hands should start empty and be added to
 		//All hand in the hand need to be accessible
@@ -15,31 +15,58 @@ public class Hand {
 
 	}
 	
+	/* This method adds a card to the hand variable
+	 * Argument:
+	 * 		card: a Card object
+	 */
 	public void addCard(Card card) {
 		this.hand.add(card);
 	}
 	
+	/* This method removes a card from the hand variable using the Card object argument
+	 * Argument:
+	 * 		card: a Card object
+	 */
 	public void removeCard(Card card) {
 		this.hand.remove(card);
 	}
 	
+	/* This method checks if the hand variable is empty
+	 * Returns:
+	 * 		true if hand is empty otherwise false
+	 */
 	public boolean isEmpty() {
 		return hand.isEmpty();
 	}
+
+	/* This method gets a copy of the hand variable
+	 * Returns:
+	 * 		an ArrayList<>(hand)- a copy of hand
+	 */
 	public List<Card> getHand() {
 		// return a copy of the hand, avoidance of problematic escaping references
 		return new ArrayList<>(hand);
 	}
 
+	/* This method clears the hand variable by calling the class' clear method
+	 */
 	public void clear() {
 		hand.clear();
 	}
 
+	/* This method returns the size of the hand variable
+	 */
 	public int size() {
 		return hand.size();
 	}
 
-	// score the hand + starter card
+	/* This method scores a hand and the starter card from the argument passed by calling private
+	 * methods for various ways of scoring a hand
+	 * Arguments:
+	 * 		starter: a Card object
+	 * Returns:
+	 * 		an int score
+	 */
 	public int score(Card starter) {
 		List<Card> fullHand = new ArrayList<>(hand);
 		fullHand.add(starter);
@@ -55,7 +82,12 @@ public class Hand {
 		return score;
 	}
 	
-	// check for 15s
+	/* This method scores the hand for fifteen combinations
+	 * Arguments:
+	 * 		hand: a List<Card> object
+	 * Returns:
+	 * 		an int of the hand's score
+	 */
 	private int scoreFifteens(List<Card> hand) {
 		int count = 0;
 		int n = hand.size();
@@ -74,7 +106,12 @@ public class Hand {
 		return count*2;
 	}
 	
-	// checks for pairs
+	/* This method scores the hand for pair combinations
+	 * Arguments:
+	 * 		hand: List<Card>
+	 * Returns:
+	 * 		an int score
+	 */
 	private int scorePairs(List<Card> hand) {
 		int score = 0;
 		for (int i=0; i < hand.size(); i++) {
@@ -87,8 +124,12 @@ public class Hand {
 		return score;
 	}
 	
-	// This class scores the maximum run once, doesn't score the subsets
-	// so if we have 10 J K Q, it only scores a run of 4 and not 3 runs of 3
+	/* This method scores the max run of a hand and disregards other subsets
+	 * Arguments:
+	 * 		hand: List<Card> object
+	 * Returns:
+	 * 		an int of the hand's score
+	 */
 	private int scoreRuns(List<Card> hand) {
 		List<List<Card>> allSubsets = getSubsets(hand);
 		int maxRunLen = 0;
@@ -106,7 +147,13 @@ public class Hand {
 		}
 		return runScore*maxRunLen;
 	}
-	// helper method for scoreRuns
+
+	/* This method is a helper method for the scoreRuns method that checks for subsets of runs
+	 * Arguments:
+	 * 		cards: List<Card>
+	 * Returns:
+	 * 		a subset of all runs based on the cards argument
+	 */
 	private List<List<Card>> getSubsets(List<Card> cards) {
 		List<List<Card>> subsets = new ArrayList<>();
 		int n = cards.size();
@@ -122,7 +169,13 @@ public class Hand {
 		}
 		return subsets;
 	}
-	// helper method for scoreRuns
+
+	/* This method is a helper for the scoreRuns method to check is the hand has a run combination
+	 * Arguments:
+	 * 		cards: a List<Card> object
+	 * Returns:
+	 * 		a boolean based on if there is a run in the cards
+	 */
 	private boolean isRun(List<Card> cards) {
 		if (cards.size() < 3) return false;
 
@@ -139,7 +192,13 @@ public class Hand {
 		}
 		return true;
 	}
-	// checks for flushes
+
+	/* This method scores for flushes in the hand and uses the starter card
+	 * Arguments:
+	 * 		starter: a Card object
+	 * Returns:
+	 * 		an int of the score of the hand
+	 */
 	private int scoreFlush(Card starter) {
 		if (hand.size() < 4) return 0;
 
@@ -159,7 +218,12 @@ public class Hand {
 		return 0;
 	}
 	
-	// checks for nobs
+	/* This method checks for nobs by comparing the hand to a Jack and the starter suit
+	 * Arguments:
+	 * 		starter: a Card object
+	 * Returns:
+	 * 		an int score of the hand
+	 */
 	private int scoreNobs(Card starter) {
 		for (Card c : hand) {
 			if (c.rank == Rank.JACK && c.suit == starter.suit) {
@@ -168,9 +232,13 @@ public class Hand {
 		}
 		return 0;
 	}
-	
-	
-	
+
+	/* This method gets all the cards from the hand that can be played
+	 * Arguments:
+	 * 		currentTotal: an int of the current total sum of discarded cards
+	 * Returns:
+	 * 		a List<Card> of cards that won't exceed 31 points if played
+	 */
 	public List<Card> getPlayableCards(int currentTotal) {
 	    List<Card> playable = new ArrayList<>();
 	    for (Card card : hand) {

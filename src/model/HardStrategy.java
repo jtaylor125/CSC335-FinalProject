@@ -6,6 +6,12 @@ import java.util.List;
 
 public class HardStrategy implements Strategy {
 
+    /* This method selects the two highest cards to discard to the crib
+     * Arguments:
+     *      hand: a List representing the player's current hand
+     * Returns:
+     *      a List containing two chosen cards based on their value
+     */
     @Override
     public List<Card> chooseDiscards(List<Card> hand) {
         // discard the 2 highest cards
@@ -14,6 +20,14 @@ public class HardStrategy implements Strategy {
         return copy.subList(0, 2);
     }
 
+    /* This method chooses the lowest value card to play during pegging play 
+     * Arguments:
+     *      playableCards: a List of cards that can legally be played
+     *      runningTotal: the current running total of pegging values
+     *      playedCards: a List of cards that have already been played
+     * Returns:
+     *      a Card with the lowest value selected from the list of playable cards
+     */
     @Override
     public Card choosePeggingPlayCard(List<Card> playableCards, int runningTotal, List<Card> playedCards) {
         // prefer lowest card that doesn't exceed 31
