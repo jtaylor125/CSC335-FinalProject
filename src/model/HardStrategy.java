@@ -1,57 +1,37 @@
-package Tests;
+package model;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
+public class HardStrategy implements Strategy {
 
-import model.Card;
-import model.Hand;
-import model.HardStrategy;
+    /* This method selects the two highest cards to discard to the crib
+     * Arguments:
+     *      hand: a List representing the player's current hand
+     * Returns:
+     *      a List containing two chosen cards based on their value
+     */
+    @Override
+    public List<Card> chooseDiscards(List<Card> hand) {
+        // discard the 2 highest cards
+        List<Card> copy = new ArrayList<>(hand);
+        copy.sort(Comparator.comparingInt(Card::getValue).reversed());
+        return copy.subList(0, 2);
+    }
 
-public class HardStrategyTest {
-	@Test
-	void testEasyStrat() {
-		HardStrategy hard = new HardStrategy();
-		Card c1 = Card.get("ACE", "SPADES");
-		Card c2 = Card.get("TWO", "HEARTS");
-		Card c3 = Card.get("THREE", "DIAMONDS");
-		Card c4 = Card.get("FOUR", "CLUBS");
-		Card c5 = Card.get("FIVE", "SPADES");
-		Card c6 = Card.get("SIX", "SPADES");
-		
-		Hand hand = new Hand();
-		hand.addCard(c1);
-		hand.addCard(c2);
-		hand.addCard(c3);
-		hand.addCard(c4);
-		hand.addCard(c5);
-		hand.addCard(c6);
-		
-		List<Card> discards = hard.chooseDiscards(hand.getHand());
-		assertTrue(hand.getHand().contains(discards.get(0)));
-		assertTrue(hand.getHand().contains(discards.get(1)));
-	}
-	
-	@Test
-	void testPeg() {
-		HardStrategy hard = new HardStrategy();
-		Card c1 = Card.get("ACE", "SPADES");
-		Card c2 = Card.get("TWO", "HEARTS");
-		Card c3 = Card.get("THREE", "DIAMONDS");
-		Card c4 = Card.get("FOUR", "CLUBS");
-
-		
-		Hand hand = new Hand();
-		hand.addCard(c1);
-		hand.addCard(c2);
-		hand.addCard(c3);
-		hand.addCard(c4);
-		
-		Hand hand2 = new Hand();
-		
-		Card played = hard.choosePeggingPlayCard(hand.getPlayableCards(0), 0, hand2.getHand());
-		assertTrue(hand.getHand().contains(played));
-	}
+    /* This method chooses the lowest value card to play during pegging play 
+     * Arguments:
+     *      playableCards: a List of cards that can legally be played
+     *      runningTotal: the current running total of pegging values
+     *      playedCards: a List of cards that have already been played
+     * Returns:
+     *      a Card with the lowest value selected from the list of playable cards
+     */
+    @Override
+    public Card choosePeggingPlayCard(List<Card> playableCards, int runningTotal, List<Card> playedCards) {
+        // prefer lowest card that doesn't exceed 31
+        playableCards.sort(Comparator.comparingInt(Card::getValue));
+        return playableCards.get(0);
+    }
 }

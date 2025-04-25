@@ -1,4 +1,4 @@
-/* Authors: Andy Zhang
+/* Authors: Andy Zhang, Nathan Crossman, Jacob Taylor, Tristan Emma
  * Course: CSC 335
  * Description: This class is used to simulate a game of Cribbage. It is composed of many Classes
  * such as Player, Deck, Hand, CardStack, and Pegboard.
