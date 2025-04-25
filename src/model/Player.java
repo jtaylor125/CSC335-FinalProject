@@ -6,6 +6,8 @@ public class Player {
 	private int score;
 	
 	private boolean isDealer;
+
+	private int winCount;
 	
 	public Player() {
 		this.playerHand = new Hand();
@@ -33,6 +35,10 @@ public class Player {
 	public int getScore() {
 		return this.score;
 	}
+
+	public int getWinCount() {
+		return this.winCount;
+	}
 	
 	// not well encapsulated, for package use only
 	Hand getHand() {
@@ -55,5 +61,9 @@ public class Player {
 	
 	public int scoreHand(Card starter) {
 		return playerHand.score(starter);
+	}
+
+	public void playerWon() {
+		++winCount;
 	}
 }
