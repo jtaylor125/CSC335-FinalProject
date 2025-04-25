@@ -7,7 +7,7 @@ import model.CardStack;
 public class ThirtyOneRule implements Rule {
 
     @Override
-    public int score(CardStack stack, Card starter) {
+    public int score(Iterable<Card> stack, Card starter) {
         int total = 0;
         for (Card c : stack) {
             total += c.getValue();

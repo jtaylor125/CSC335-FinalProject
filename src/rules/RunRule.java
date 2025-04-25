@@ -1,7 +1,6 @@
 package rules;
 
 import model.Card;
-import model.CardStack;
 
 import java.util.*;
 
@@ -9,7 +8,7 @@ import java.util.*;
 public class RunRule implements Rule {
 
     @Override
-    public int score(CardStack stack, Card starter) {
+    public int score(Iterable<Card> stack, Card starter) {
         List<Card> cards = new ArrayList<>();
 	    for (Card c : stack) {
 	        cards.add(c);
