@@ -1,3 +1,9 @@
+/*
+ * File:	HandFifteenRule.java
+ * Author:	Tristan Emma
+ * AI Help:	ChatGPT
+ * Purpose: This is the "15 for 2" rule in Cribbage when scoring a hand
+ */
 package rules;
 
 import java.util.ArrayList;
@@ -5,6 +11,7 @@ import java.util.List;
 
 import model.Card;
 
+@ScoringRule(type = RuleType.HAND)
 public class HandFifteenRule implements Rule {
 	
 	@Override

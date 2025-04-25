@@ -1,3 +1,9 @@
+/*
+ * File:	HandRunRule.java
+ * Author:	Tristan Emma
+ * AI Help:	ChatGPT
+ * Purpose: This is the "Run" rule in Cribbage when scoring a hand
+ */
 package rules;
 
 import java.util.ArrayList;
@@ -6,6 +12,7 @@ import java.util.List;
 
 import model.Card;
 
+@ScoringRule(type = RuleType.HAND)
 public class HandRunRule implements Rule {
 
 	@Override

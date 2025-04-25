@@ -1,15 +1,21 @@
+/*
+ * File:	FifteenRule.java
+ * Author:	Tristan Emma
+ * AI Help:	ChatGPT
+ * Purpose: This is the "15 for 2" rule in Cribbage when scoring during pegging play
+ */
 package rules;
 
 import model.Card;
-import model.CardStack;
+
 
 @ScoringRule(type = RuleType.PEGGING)
 public class FifteenRule implements Rule {
 
     @Override
-    public int score(CardStack stack, Card starter) {
+    public int score(Iterable<Card> cards, Card starter) {
         int total = 0;
-        for (Card c : stack) {
+        for (Card c : cards) {
             total += c.getValue();
         }
         return (total == 15) ? 2 : 0;

@@ -1,3 +1,10 @@
+/*
+ * File:	HandScoringEngine.java
+ * Author:	Tristan Emma
+ * AI Help:	ChatGPT
+ * Purpose: This controls the regular hand scoring rules, This is where the rules are 
+ * 			dynamically (at runtime) instantiated after the runtime type check
+ */
 package rules;
 
 import java.util.ArrayList;
@@ -18,7 +25,10 @@ public class HandScoringEngine {
     }
 
     public void registerRule(Rule rule) {
-        rules.add(rule);
+    	 ScoringRule annotation = rule.getClass().getAnnotation(ScoringRule.class);
+         if (annotation != null && annotation.type() == RuleType.HAND) {
+             rules.add(rule);
+         }
     }
 
     public int scoreHand(List<Card> cards, Card starter) {
