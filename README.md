@@ -1,5 +1,5 @@
 # CSC335-FinalProject
+### Authors: Nathaniel Crossan, Tristan Emma, Jacob Taylor, Andy Zhang
 
-## Authors: Nathaniel Crossan, Tristan Emma, Jacob Taylor, Andy Zhang
-
-<p>This is a paragraph</p>
+#### Running the program
+<p>To run the program</p>
