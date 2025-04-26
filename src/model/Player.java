@@ -21,6 +21,8 @@ public class Player {
 		this.score = 0;
 		
 		this.isDealer = false;
+
+		this.winCount = 0;
 	}
 	
 	
