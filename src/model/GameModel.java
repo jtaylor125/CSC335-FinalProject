@@ -543,8 +543,12 @@ public class GameModel {
 	}
 	
 	public Player getPlayerTwo() {
-		return playerTwo;
-		
+		return playerTwo;	
 	}
+	
+	public String getWins() {
+		return "Player 1 Wins: " + playerOne.getWinCount() + "\nPlayer 2 Wins: " + playerTwo.getWinCount();
+	}
+
 }
 

@@ -30,6 +30,8 @@ public class CardStackTest {
 		assertEquals(stack.size(),1);
 	}
 	
+	
+	
 	@Test
 	void testPop() {
 		CardStack stack = new CardStack();

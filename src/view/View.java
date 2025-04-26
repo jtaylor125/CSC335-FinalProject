@@ -1,5 +1,6 @@
 /* Authors: Andy Zhang, Nathan Crossman, Jacob Taylor, Tristan Emma
  * Course: CSC 335
+ * AI Help: Chat GPT
  * Description: The User Interface for the cribbage game.
  */
 
@@ -59,6 +60,19 @@ public class View {
 	}
 	
 	public static void handleOnePlayer(Scanner systemIn, GameModel game) {
+		System.out.println(game.getWins());
+		
+		String playAgain = "Y";
+		while (playAgain.equals("Y")) {
+			handleOnePlayerHelper(systemIn, game);
+			System.out.println(game.getWins());
+			
+			System.out.println("Do you want to play again? (Y or N)");
+			playAgain = systemIn.nextLine().strip();
+		}
+	}
+	
+	public static void handleOnePlayerHelper(Scanner systemIn, GameModel game) {
 	    System.out.println("Select difficulty (enter 'easy' or 'hard'):");
 	    String difficulty = systemIn.nextLine().strip().toLowerCase();
 
@@ -124,9 +138,9 @@ public class View {
 	
 		    System.out.println("Starting pegging play...");
 	
-		    game.onePlayerPeggingPlay(systemIn, computer);
+		    if (game.onePlayerPeggingPlay(systemIn, computer)) break;
 		    // scores each players hand
-		    game.regularPlay();
+		    if (game.regularPlay()) break;
 			System.out.println("Player 1 Score: " + game.getScore("player 1"));
 			System.out.println("Player 2 Score: " + game.getScore("player 2"));
 			System.out.println(game.getPegboard());
@@ -140,6 +154,19 @@ public class View {
 	}
 	
 	public static void handleTwoPlayers(Scanner systemIn, GameModel game) {
+		System.out.println(game.getWins());
+		
+		String playAgain = "Y";
+		while (playAgain.equals("Y")) {
+			handleTwoPlayersHelper(systemIn, game);
+			System.out.println(game.getWins());
+			
+			System.out.println("Do you want to play again? (Y or N)");
+			playAgain = systemIn.nextLine().strip();
+		}
+	}
+	
+	public static void handleTwoPlayersHelper(Scanner systemIn, GameModel game) {
 		System.out.println("Assign Player 1 and Player 2, type anything to start");
 		String input = systemIn.nextLine().strip();
 
@@ -192,8 +219,8 @@ public class View {
 			System.out.println("");
 	
 			System.out.println("Starting pegging play...");
-			game.peggingPlay(systemIn);
-			game.regularPlay();
+			if (game.peggingPlay(systemIn)) break;
+			if (game.regularPlay()) break;
 			
 			System.out.println("Player 1 Score: " + game.getScore("player 1"));
 			System.out.println("Player 2 Score: " + game.getScore("player 2"));
