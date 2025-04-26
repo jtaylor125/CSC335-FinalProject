@@ -1,14 +1,15 @@
-/* Authors: Andy Zhang
+/* Authors: Andy Zhang, Nathan Crossman, Jacob Taylor, Tristan Emma
+ * Course: CSC 335
  * Description: This class is used to simulate a game of Cribbage. It is composed of many Classes
  * such as Player, Deck, Hand, CardStack, and Pegboard.
- * 
  */
 package model;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
+
+import rules.PeggingScoringEngine;
 
 public class GameModel {
 	private Player playerOne;
@@ -20,6 +21,9 @@ public class GameModel {
 	private CardStack playingRun;
 	private Pegboard pegboard;
 	private int runningTotal;
+	
+	private PeggingScoringEngine ruleEngine;
+	
 	
 	// Constructor
 	public GameModel() {
@@ -35,6 +39,8 @@ public class GameModel {
 		playingRun = null;
 		
 		pegboard = new Pegboard();
+		
+		ruleEngine = new PeggingScoringEngine();
 	}
 	
     /* This method determines the dealer by drawing a random card for each player.
@@ -111,10 +117,13 @@ public class GameModel {
 	
     /* This method executes pegging play between two human players.
      * It handles alternating turns, card selection, point scoring, and turn logic.
+     * Returns true or false to determine if someone won
      * Arguments:
      *      input: a Scanner used to receive player input
+     * Returns:
+     * 		true or false
      */
-	public void peggingPlay(Scanner input) {
+	public boolean peggingPlay(Scanner input) {
 	    starter = deck.drawTop();
 	    playingRun = new CardStack();
 	    runningTotal = 0;
@@ -133,10 +142,11 @@ public class GameModel {
 
 	    boolean goCalled = false;
 	    System.out.println("Starter card: " + starter);
+	    // game loop
 	    while (!playerOne.isHandEmpty() || !playerTwo.isHandEmpty()) {
 	        Hand currentHand = currentPlayer.getHand();
 	        List<Card> playableCards = currentHand.getPlayableCards(runningTotal);
-	        
+	        // play until both players run out of cards to play
 	        if (!playableCards.isEmpty()) {
 	            System.out.println(getPlayerName(currentPlayer) + ", select a card to play:");
 	            for (int i=0; i < playableCards.size(); i++) {
@@ -144,10 +154,10 @@ public class GameModel {
 	            }
 
 	            int selectedIndex = -1;
+                // input validation
 	            while (true) {
 	                System.out.print("Enter the number of the card to play: ");
 	                String selection = input.nextLine().strip();
-	                // input validation
 	                try {
 	                    selectedIndex = Integer.parseInt(selection);
 	                    if (selectedIndex >= 0 && selectedIndex < playableCards.size()) {
@@ -167,25 +177,18 @@ public class GameModel {
 	            playingRun.push(play);
 	            runningTotal += play.getValue();
 
-	            int points = 0;
-	            if (runningTotal == 15 || runningTotal == 31) {
-	                points += 2;
-	            }
-
-	            points += scorePair(playingRun);
-	            points += scoreRun(playingRun);
-
+	            int points = ruleEngine.scorePegging(playingRun);
+	            // add points
 	            pegboard.addPoints(currentPlayer, points);
-
-				if (checkIfPlayerWon(currentPlayer, otherPlayer)) break;
+				if (checkIfPlayerWon(currentPlayer, otherPlayer)) return true;
 
 	            System.out.println(getPlayerName(currentPlayer) + " plays " + play + " for " + points + 
 	            		" point(s). Running total: " + runningTotal);
-	            
+	            // last card scoring
 	            if (runningTotal == 31 || bothPlayersCantPlay(currentPlayer, otherPlayer)) {
 	                if (runningTotal != 31) {
 	                    pegboard.addPoints(currentPlayer, 1);
-						if (checkIfPlayerWon(currentPlayer, otherPlayer)) break;
+						if (checkIfPlayerWon(currentPlayer, otherPlayer)) return true;
 	                    System.out.println(getPlayerName(currentPlayer) + " scores 1 point for last card.");
 	                }
 
@@ -194,10 +197,11 @@ public class GameModel {
 	                goCalled = false;
 	            }
 	        }
+	        // "Go" scoring
 	        else {
 	            if (goCalled) {
 	                pegboard.addPoints(otherPlayer, 1);
-					if (checkIfPlayerWon(currentPlayer, otherPlayer)) break;
+					if (checkIfPlayerWon(currentPlayer, otherPlayer)) return true;
 	                System.out.println(getPlayerName(currentPlayer) + " says 'Go'. " + getPlayerName(otherPlayer) + " scores 1 point.");
 	                runningTotal = 0;
 	                playingRun.clear();
@@ -214,29 +218,26 @@ public class GameModel {
 	    }
 	    if (runningTotal > 0 && runningTotal < 31) {
 	        pegboard.addPoints(currentPlayer, 1);
-			if (checkIfPlayerWon(currentPlayer, otherPlayer));
+			if (checkIfPlayerWon(currentPlayer, otherPlayer)) return true;
 	        else System.out.println(getPlayerName(currentPlayer) + " scores 1 point for final card.");
 	    }
+	    return false;
 	}
 
-	/* This method checks if one of the players have reached the end of pegboard, and resets the pegboard.
-	 * Arguments:
-	 * 		player 1: an arbitrary Player object
-	 * 		player 2: an arbitrary Player object
-	 * Returns :
-	 * 		true if a player has won, false if no player has won
-	 */
+	// check if a player has won
 	private boolean checkIfPlayerWon(Player player1, Player player2) {
 		if (pegboard.hasWon(player1)) {
 			if (getPlayerName(player1).equals("Player 1")) {
 				playerOne.playerWon();
 				System.out.println(getPlayerName(player1) + " has won!");
 				pegboard.resetScores();
+				reset();
 			}
 			else {
 				playerTwo.playerWon();
 				System.out.println(getPlayerName(player2) + " has won!");
 				pegboard.resetScores();
+				reset();
 			}
 			return true;
 		}
@@ -259,11 +260,14 @@ public class GameModel {
 	/* This method executes pegging play for a one-player game human vs computer.
 	 * It alternates turns between the human and computer player, evaluates playable cards,
 	 * calculates scores for runs, pairs, and special totals like 15 and 31, and manages "go" calls.
+	 * Returns true or false to determine if someone won during the middle of the round
 	 * Arguments:
 	 *      input: a Scanner object for user input
 	 *      computer: a Computer object representing the AI opponent
+	 * Returns:
+	 * 		true or false
 	 */
-	public void onePlayerPeggingPlay(Scanner input, Computer computer) {
+	public boolean onePlayerPeggingPlay(Scanner input, Computer computer) {
 	    starter = deck.drawTop();
 	    playingRun = new CardStack();
 	    runningTotal = 0;
@@ -273,7 +277,7 @@ public class GameModel {
 
 	    Player currentPlayer;
 	    Player otherPlayer;
-
+	    
 	    if (player1.isDealer()) {
 	        currentPlayer = computerPlayer;
 	        otherPlayer = player1;
@@ -284,23 +288,24 @@ public class GameModel {
 	    }
 
 	    boolean goCalled = false;
-
+	    // game loop
 	    while (!player1.isHandEmpty() || !computerPlayer.isHandEmpty()) {
 	        Hand currentHand = currentPlayer.getHand();
 	        List<Card> playableCards = currentHand.getPlayableCards(runningTotal);
-
+	        // play until the player runs out of cards
 	        if (!playableCards.isEmpty()) {
 	            Card play;
 
 	            if (currentPlayer == player1) {
-	                // Human chooses card
+	                // player chooses card
 	                System.out.println("Your hand: " + getHand("Player 1"));
 	                System.out.println("Playable cards:");
 	                for (int i = 0; i < playableCards.size(); i++) {
-	                    System.out.println("[" + i + "] " + playableCards.get(i));
+	                    System.out.println(i + ": " + playableCards.get(i));
 	                }
 
 	                int selectedIndex = -1;
+	                // input validation
 	                while (true) {
 	                    System.out.print("Enter the number of the card to play: ");
 	                    String selection = input.nextLine().strip();
@@ -310,7 +315,7 @@ public class GameModel {
 	                            break;
 	                        }
 	                        else {
-	                            System.out.println("Index out of range. Try again.");
+	                            System.out.println("Number out of range. Try again.");
 	                        }
 	                    }
 	                    catch (NumberFormatException e) {
@@ -334,26 +339,16 @@ public class GameModel {
 	            playingRun.push(play);
 	            runningTotal += play.getValue();
 
-	            int points = 0;
-	            if (runningTotal == 15) {
-	                points += 2;
-	            }
-
-	            if (runningTotal == 31) {
-	                points += 2;
-	            }
-
-	            points += scorePair(playingRun);
-	            points += scoreRun(playingRun);
+	            int points = ruleEngine.scorePegging(playingRun);
 
 	            pegboard.addPoints(currentPlayer, points);
-				if (checkIfPlayerWon(currentPlayer, otherPlayer)) break;
+				if (checkIfPlayerWon(currentPlayer, otherPlayer)) return true;
 	            System.out.println(getPlayerName(currentPlayer) + " scores " + points + " point(s). Running total: " + runningTotal);
-
+	            // last card point scoring
 	            if (runningTotal == 31 || bothPlayersCantPlay(player1, computerPlayer)) {
 	                if (runningTotal != 31) {
 	                    pegboard.addPoints(currentPlayer, 1);
-						if (checkIfPlayerWon(currentPlayer, otherPlayer)) break;
+						if (checkIfPlayerWon(currentPlayer, otherPlayer)) return true;
 	                    System.out.println(getPlayerName(currentPlayer) + " scores 1 point for last card.");
 	                }
 
@@ -362,10 +357,11 @@ public class GameModel {
 	                goCalled = false;
 	            }
 	        }
+	        // "Go" scoring
 	        else {
 	            if (goCalled) {
 	                pegboard.addPoints(otherPlayer, 1);
-					if (checkIfPlayerWon(currentPlayer, otherPlayer)) break;
+					if (checkIfPlayerWon(currentPlayer, otherPlayer)) return true;
 	                System.out.println(getPlayerName(currentPlayer) + " says 'Go'. " + getPlayerName(otherPlayer) + " scores 1 point.");
 	                runningTotal = 0;
 	                playingRun.clear();
@@ -384,9 +380,10 @@ public class GameModel {
 
 	    if (runningTotal > 0 && runningTotal < 31) {
 	        pegboard.addPoints(currentPlayer, 1);
-			if (checkIfPlayerWon(currentPlayer, otherPlayer));
+			if (checkIfPlayerWon(currentPlayer, otherPlayer)) return true;
 	        else System.out.println(getPlayerName(currentPlayer) + " scores 1 point for final card.");
 	    }
+	    return false;
 	}
 	
     /* This method returns a player name string based on which player object is passed in
@@ -403,36 +400,15 @@ public class GameModel {
 	        return "Player 2";
 	    }
 	}
-	/* This method checks the last played cards in the stack for a pair, triple, or four-of-a-kind.
-	 * It returns a score based on how many of the most recent cards have the same rank.
-	 * Arguments:
-	 *      stack: a CardStack representing the current pegging play
-	 * Returns:
-	 *      an int representing the points earned from matched cards
-	 */
-	private int scorePair(CardStack stack) {
-	    List<Card> cards = new ArrayList<>();
-	    for (Card c : stack) {
-	        cards.add(c);
-	    }
 
-	    int count = 1;
-	    for (int i=cards.size()-2; i >= 0; i--) {
-	        if (cards.get(i).rank == cards.get(cards.size()-1).rank) {
-	            count++;
-	        }
-	        else break;
-	    }
-	    if (count == 2) return 2;
-	    else if (count == 3) return 6;
-	    else if (count == 4) return 12;
-	    return 0;
-	}
 
 	/* This method scores each player's hand using the starter card and also scores the crib
 	 * for the dealer. Scores are added to the pegboard and displayed to the user.
+	 * Returns true or false if a player wins through regularPlay
+	 * Returns:
+	 * 		true or false
 	 */
-	public void regularPlay() {
+	public boolean regularPlay() {
 		int plrOnePts = playerOne.scoreHand(starter);
 		System.out.println("Player 1 scores " + plrOnePts);
 		int plrTwoPts = playerTwo.scoreHand(starter);
@@ -441,7 +417,7 @@ public class GameModel {
 		// add the scores to the pegboard
 		pegboard.addPoints(playerOne, plrOnePts);
 		pegboard.addPoints(playerTwo, plrTwoPts);
-		checkIfPlayerWon(playerOne, playerTwo);
+		if (checkIfPlayerWon(playerOne, playerTwo)) return true;
 		
 		System.out.println("Crib: " + getCrib());
 
@@ -450,64 +426,17 @@ public class GameModel {
 			int cribPts = crib.score(starter);
 			pegboard.addPoints(playerOne, cribPts);
 			System.out.println("Player 1 scores " + cribPts + " from the crib");
-			checkIfPlayerWon(playerOne, playerTwo);
+			if (checkIfPlayerWon(playerOne, playerTwo)) return true;
 		}
 		else {
 			int cribPts = crib.score(starter);
 			pegboard.addPoints(playerTwo, cribPts);
 			System.out.println("Player 2 scores " + cribPts + " from the crib");
-			checkIfPlayerWon(playerOne, playerTwo);
+			if (checkIfPlayerWon(playerOne, playerTwo)) return true;
 		}
-		
+		return false;
 	}
-	/* This method checks for runs in the current pegging play and returns the score of
-	 * the longest run found from the end of the play stack.
-	 * Arguments:
-	 *      stack: a CardStack of cards currently played in the pegging phase
-	 * Returns:
-	 *      an int representing the score based on run length
-	 */
-	private int scoreRun(CardStack stack) {
-	    List<Card> cards = new ArrayList<>();
-	    for (Card c : stack) {
-	        cards.add(c);
-	    }
 
-	    int maxRun = 0;
-	    for (int len = 3; len <= cards.size(); len++) {
-	        List<Card> sub = cards.subList(cards.size() - len, cards.size());
-	        if (isRun(sub)) {
-	            maxRun = len;
-	        }
-	    }
-	    return maxRun;
-	}
-	/* This helper method checks if a given list of cards forms a valid run
-	 * by comparing ordinal values of card ranks in sorted order.
-	 * Arguments:
-	 *      cards: a List of cards to check
-	 * Returns:
-	 *      true if the cards form a consecutive run; false otherwise
-	 */
-	private boolean isRun(List<Card> cards) {
-	    if (cards.size() < 3) {
-	        return false;
-	    }
-
-	    List<Integer> values = new ArrayList<>();
-	    for (Card card : cards) {
-	        values.add(card.rank.ordinal());
-	    }
-
-	    Collections.sort(values);
-	    for (int i=1; i < values.size(); i++) {
-	        if (values.get(i) != values.get(i - 1) + 1) {
-	            return false;
-	        }
-	    }
-
-	    return true;
-	}
 	
 	/* This method checks whether both players have no playable cards remaining
 	 * given the current running total.
@@ -534,7 +463,7 @@ public class GameModel {
 		starter = null;
 		runningTotal = 0;
 		crib.clear();
-		playingRun.clear();
+		if (playingRun != null) playingRun.clear();
 		deck.buildNewDeck();
 		deck.shuffle();
 		switchDealers();
@@ -567,10 +496,7 @@ public class GameModel {
 		return null;
 	}
 	
-	/* This method returns a string representation of a Player object if they are the dealer
-	 * Returns: 
-	 * 		a String of either Player 1 or Player 2
-	 */
+	// getters
 	public String getDealer() {
 		if (playerOne.isDealer()) {
 			return "Player 1";
@@ -579,13 +505,7 @@ public class GameModel {
 			return "Player 2";
 		}
 	}
-
-	/* This method returns a string representation of a player's hand based on the String argument
-	 * Argument:
-	 * 		player : a String object (either player 1 or player 2)
-	 * Returns:
-	 * 		a String of a player's hand
-	 */
+	// gets the hand of a player
 	public String getHand(String player) {
 		String hand = "";
 		if (player.toLowerCase().equals("player 1")) {
@@ -598,13 +518,10 @@ public class GameModel {
 				hand += c.toString() +", ";
 			}
 		}
+		if (hand.length() == 0) return "";
 		return hand.substring(0,hand.length()-2);
 	}
-
-	/* This method returns a string representation of the crib hand
-	 * Returns:
-	 * 		a String of the crib object
-	 */
+	// gets the current crib
 	public String getCrib() {
 		String cribString = "";
 		for (Card c : crib.getHand()) {
@@ -612,13 +529,7 @@ public class GameModel {
 		}
 		return cribString.substring(0, cribString.length()-2);
 	}
-	
-	/* This method gets the score of a player using the front peg in the pegboard
-	 * Argument:
-	 * 		playerName: a String object that is either player 1 or player 2
-	 * Returns:
-	 * 		the int score of a player using the front peg of pegboard
-	 */
+	// gets the score of a player using the front peg
 	public int getScore(String playerName) {
 	    if (playerName.toLowerCase().equals("player 1")) {
 	        return pegboard.getScore(playerOne);
@@ -627,19 +538,10 @@ public class GameModel {
 	        return pegboard.getScore(playerTwo);
 	    }
 	}
-
-	/* This method returns a string representation of the pegboard object
-	 * Returns:
-	 * 		a String of pegboard using the toString method
-	 */
 	public String getPegboard() {
 		return pegboard.toString();
 	}
 	
-	/* This method returns playerTwo
-	 * Returns:
-	 * 		the playerTwo Player object
-	 */
 	public Player getPlayerTwo() {
 		return playerTwo;
 		

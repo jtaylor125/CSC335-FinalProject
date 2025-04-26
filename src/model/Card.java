@@ -1,3 +1,7 @@
+/* Authors: Andy Zhang, Nathan Crossman, Jacob Taylor, Tristan Emma
+ * Course: CSC 335
+ * Description: An instance of this class represents a playing Card
+ */
 package model;
 
 import java.util.HashMap;
